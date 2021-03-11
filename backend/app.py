@@ -2,7 +2,7 @@
 import uuid
 from flask import Flask, g, jsonify, request
 from flask_oidc import OpenIDConnect
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 # configuration
 DEBUG = True
@@ -10,7 +10,7 @@ DEBUG = True
 app = Flask(__name__)
 
 # enable CORS
-CORS(app, resources={r'/*': {'origins': '*'}})
+CORS(app, resources={r'/*': {'origins': 'http://localhost:8080/'}})
 
 app.config.update({
     'SECRET_KEY': 'foiclientapp',
@@ -22,7 +22,8 @@ app.config.update({
     'OIDC_USER_INFO_ENABLED': True,
     'OIDC_SCOPES': ['openid', 'email', 'profile'],
     'OIDC_INTROSPECTION_AUTH_METHOD': 'client_secret_post',
-    'OIDC_TOKEN_TYPE_HINT': 'access_token'
+    'OIDC_TOKEN_TYPE_HINT': 'access_token',
+    'CORS_HEADERS':'Content-Type'
 })
 
 oidc = OpenIDConnect(app)
@@ -60,6 +61,7 @@ def home():
 
 @app.route('/dashboard')
 @oidc.require_login
+@cross_origin()
 def dashboard():
     userinfo = oidc.user_getinfo(['email','preferred_username','sub'])
 
@@ -68,6 +70,14 @@ def dashboard():
     userid = userinfo.get('sub')
 
     return("This is your dashboard, %s and your email is %s! and UserId is %s"%(username,email,userid))
+
+@app.route('/user',  methods=['GET'])
+@oidc.require_login
+@cross_origin(origin='*',headers=['Content-Type','Authorization','Access-Control-Allow-Origin'])
+def user():
+    userinfo = oidc.user_getinfo(['email','preferred_username','sub'])
+    email  = userinfo.get('email')   
+    return jsonify(email)
 
 # sanity check route
 @app.route('/ping', methods=['GET'])
