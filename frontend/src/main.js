@@ -25,10 +25,10 @@ const keycloak = Keycloak(initOptions);
 
 keycloak.init({ onLoad: initOptions.onLoad }).then((auth) => {
   if (!auth) {
-    // window.location.reload();
+     window.location.reload();
   } else {
     Vue.$log.info('Authenticated');
-    new Vue({      
+    new Vue({ router,   
       render: h => h(App, { props: { keycloak: keycloak } }),     
     }).$mount('#app')
     localStorage.setItem("vue-token", keycloak.token);
