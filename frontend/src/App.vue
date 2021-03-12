@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <!-- <router-view/> -->
+    <router-view/>
     <h1>HELLO</h1>
-     <!-- <h2 style="margin-left: 50px;">User: {{keycloak.tokenParsed.preferred_username}}</h2> -->
+     <h2 style="margin-left: 50px;">User: {{keycloak.tokenParsed.preferred_username}}</h2>
   </div>
 </template>
 
@@ -19,14 +19,14 @@ export default {
   },
   data() {
     return {
-      user: "",
+      user: this.user,
     };
   },
   mounted() {
     axios
       .get("http://localhost:5000/user", {
         headers: {
-          Authorization: "Bearer " + this.keycloak.token
+          Authorization: "Bearer " + this.keycloak.token          
         }
       })
       .then(response => (this.user = response));

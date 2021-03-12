@@ -1,6 +1,6 @@
 
 import uuid
-from flask import Flask, g, jsonify, request
+from flask import Flask, g, jsonify, request, json
 from flask_oidc import OpenIDConnect
 from flask_cors import CORS, cross_origin
 
@@ -10,25 +10,20 @@ DEBUG = True
 app = Flask(__name__)
 
 # enable CORS
-CORS(app, resources={r'/*': {'origins': 'http://localhost:8080/'}})
+CORS(app)
 
 app.config.update({
     'SECRET_KEY': 'foiclientapp',
     'TESTING': True,
-    'DEBUG': True,
+    'DEBUG': True,    
     'OIDC_CLIENT_SECRETS': 'client_secrets.json',
     'OIDC_ID_TOKEN_COOKIE_SECURE': False,
     'OIDC_REQUIRE_VERIFIED_EMAIL': False,
-    'OIDC_USER_INFO_ENABLED': True,
-    'OIDC_SCOPES': ['openid', 'email', 'profile'],
-    'OIDC_INTROSPECTION_AUTH_METHOD': 'client_secret_post',
-    'OIDC_TOKEN_TYPE_HINT': 'access_token',
-    'CORS_HEADERS':'Content-Type'
+    'OIDC_VALID_ISSUERS': ['https://iam.aot-technologies.com/auth/realms/foirealm'],
+    'OIDC_OPENID_REALM': 'http://localhost:5000/oidc_callback',  
 })
 
 oidc = OpenIDConnect(app)
-
-
 
 BOOKS = [
     {
@@ -71,13 +66,17 @@ def dashboard():
 
     return("This is your dashboard, %s and your email is %s! and UserId is %s"%(username,email,userid))
 
-@app.route('/user',  methods=['GET'])
-@oidc.require_login
-@cross_origin(origin='*',headers=['Content-Type','Authorization','Access-Control-Allow-Origin'])
+@app.route('/user')
+@oidc.accept_token(True)
 def user():
-    userinfo = oidc.user_getinfo(['email','preferred_username','sub'])
-    email  = userinfo.get('email')   
-    return jsonify(email)
+    
+    email = g.oidc_token_info['email']
+    userid = g.oidc_token_info['sub']
+    username = g.oidc_token_info['username']
+    userobject = {'Name':username,'Email':email,'ID':userid}
+    response = jsonify(userobject)
+
+    return response    
 
 # sanity check route
 @app.route('/ping', methods=['GET'])
