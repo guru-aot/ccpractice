@@ -92,6 +92,7 @@ def remove_book(book_id):
 
 
 @app.route('/books', methods=['GET', 'POST'])
+@oidc.accept_token(True)
 def all_books():
     response_object = {'status': 'success'}
     if request.method == 'POST':
@@ -110,6 +111,7 @@ def all_books():
 
 
 @app.route('/books/<book_id>', methods=['PUT', 'DELETE'])
+@oidc.accept_token(True)
 def single_book(book_id):
     response_object = {'status': 'success'}
     if request.method == 'PUT':

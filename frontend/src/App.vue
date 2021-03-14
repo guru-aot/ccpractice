@@ -1,35 +1,27 @@
 <template>
   <div id="app">
+    <Navbar/>
     <router-view/>
-    <h1>HELLO</h1>
-     <h2 style="margin-left: 50px;">User: {{keycloak.tokenParsed.preferred_username}}</h2>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
 import Home from "./components/Home.vue";
-import axios from "axios";
+import Navbar from "./components/Navigation";
 
 export default {
   name: "App",
   props: ["keycloak"],
   components: {
-    Home
+    Home,
+    Navbar
   },
-  data() {
-    return {
-      user: this.user,
-    };
-  },
+  // data() {
+    
+  // },
   mounted() {
-    axios
-      .get("http://localhost:5000/user", {
-        headers: {
-          Authorization: "Bearer " + this.keycloak.token          
-        }
-      })
-      .then(response => (this.user = response));
+    
   }
 };
 </script>
