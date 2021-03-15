@@ -4,10 +4,16 @@ from flask import Flask, g, jsonify, request, json
 from flask_oidc import OpenIDConnect
 from flask_cors import CORS, cross_origin
 
+from dataaccess.requestsDataAccess import RequestDataAccess
+from utils.jsonClassEncoder import JsonClassEncoder
+
 # configuration
 DEBUG = True
 
 app = Flask(__name__)
+
+requestDataAccess = RequestDataAccess()
+jsonClassEncoder = JsonClassEncoder()
 
 # enable CORS
 CORS(app)
@@ -129,5 +135,26 @@ def single_book(book_id):
         response_object['message'] = 'Book removed!'
     return jsonify(response_object)
 
+@app.route('/requests/add', methods=['POST', 'GET'])
+def addrequest():
+    requestjson = request.get_json()
+
+    name = requestjson['name']
+    description = requestjson['description']
+    status = requestjson['status']
+
+    requestaddresult = requestDataAccess.AddRequest(name, description, status)
+    if requestaddresult.success == True:
+        return jsonClassEncoder.encode(requestaddresult), 200
+    else:
+        return jsonClassEncoder.encode(requestaddresult), 500
+
+@app.route('/requests/all', methods=['GET'])
+def getallrequests():
+    requests = requestDataAccess.GetRequests()
+    jsondata = json.dumps(requests)
+    return jsondata, 200
+
+
 if __name__ == '__main__':
-    app.run('0.0.0.0', 5000, debug=True)
+    app.run(debug=True)
