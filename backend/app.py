@@ -3,31 +3,19 @@ import uuid
 from flask import Flask, g, jsonify, request, json
 from flask_oidc import OpenIDConnect
 from flask_cors import CORS, cross_origin
-
+from entities.request import Request
 from dataaccess.requestsDataAccess import RequestDataAccess
 from utils.jsonClassEncoder import JsonClassEncoder
+from config import init_app
+from utils.util import cors_preflight
 
 # configuration
 DEBUG = True
 
-app = Flask(__name__)
+app = init_app()
 
 requestDataAccess = RequestDataAccess()
 jsonClassEncoder = JsonClassEncoder()
-
-# enable CORS
-CORS(app)
-
-app.config.update({
-    'SECRET_KEY': 'foiclientapp',
-    'TESTING': True,
-    'DEBUG': True,    
-    'OIDC_CLIENT_SECRETS': 'client_secrets.json',
-    'OIDC_ID_TOKEN_COOKIE_SECURE': False,
-    'OIDC_REQUIRE_VERIFIED_EMAIL': False,
-    'OIDC_VALID_ISSUERS': ['https://iam.aot-technologies.com/auth/realms/foirealm'],
-    'OIDC_OPENID_REALM': 'http://localhost:5000/oidc_callback',  
-})
 
 oidc = OpenIDConnect(app)
 
@@ -75,17 +63,17 @@ def dashboard():
 @app.route('/user')
 @oidc.accept_token(True)
 def user():
-    
-    email = g.oidc_token_info['email']
-    userid = g.oidc_token_info['sub']
-    username = g.oidc_token_info['username']
+    email = g.oidc_id_token['email']
+    userid = g.oidc_id_token['sub']
+    username = g.oidc_id_token['preferred_username']
     userobject = {'Name':username,'Email':email,'ID':userid}
     response = jsonify(userobject)
-
-    return response    
+    return response
 
 # sanity check route
 @app.route('/ping', methods=['GET'])
+@cors_preflight('GET,POST,OPTIONS')
+@oidc.accept_token(True)
 def ping_pong():
     return jsonify('pong!')
 
@@ -97,7 +85,8 @@ def remove_book(book_id):
     return False
 
 
-@app.route('/books', methods=['GET', 'POST'])
+@app.route('/books')
+@cors_preflight('GET,POST,OPTIONS')
 @oidc.accept_token(True)
 def all_books():
     response_object = {'status': 'success'}
@@ -117,7 +106,6 @@ def all_books():
 
 
 @app.route('/books/<book_id>', methods=['PUT', 'DELETE'])
-@oidc.accept_token(True)
 def single_book(book_id):
     response_object = {'status': 'success'}
     if request.method == 'PUT':

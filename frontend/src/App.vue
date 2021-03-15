@@ -10,6 +10,7 @@
 import Home from "./components/Home.vue";
 import Navbar from "./components/Navigation";
 
+
 export default {
   name: "App",
   props: ["keycloak"],
@@ -21,7 +22,7 @@ export default {
     
   // },
   mounted() {
-    
+  
   }
 };
 </script>

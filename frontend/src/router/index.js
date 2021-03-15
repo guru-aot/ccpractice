@@ -49,7 +49,7 @@ router.beforeEach((to, from, next) => {
     keycloak.init({ onLoad: initOptions.onLoad }).then((auth) => {
       console.log(auth);
       if (!auth) {
-        //window.location.reload();
+        window.location.reload();
       } else {
         Vue.$log.info('Authenticated'); 
         var userprofile =  keycloak.loadUserProfile().then(p=>{
