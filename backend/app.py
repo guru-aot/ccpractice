@@ -7,7 +7,7 @@ from entities.request import Request
 from dataaccess.requestsDataAccess import RequestDataAccess
 from utils.jsonClassEncoder import JsonClassEncoder
 from config import init_app
-from utils.util import cors_preflight
+from utils.util import cors_preflight , reviewer, approver , hasrole
 
 # configuration
 DEBUG = True
@@ -72,8 +72,8 @@ def user():
 
 # sanity check route
 @app.route('/ping', methods=['GET'])
-@cors_preflight('GET,POST,OPTIONS')
 @oidc.accept_token(True)
+@hasrole('approver_role')
 def ping_pong():
     return jsonify('pong!')
 
@@ -88,6 +88,7 @@ def remove_book(book_id):
 @app.route('/books')
 @cors_preflight('GET,POST,OPTIONS')
 @oidc.accept_token(True)
+@hasrole('reviewer_role')
 def all_books():
     response_object = {'status': 'success'}
     if request.method == 'POST':
