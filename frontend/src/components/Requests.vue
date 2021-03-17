@@ -327,39 +327,25 @@ export default {
     }, 
     downloadRequest(request) {        
       // this.$refs.uploadRequestModal.hide();         
-      let requestID = request.requestid;      
-      var optionAxios = {
-            headers: {
-               Authorization: "Bearer " + localStorage.getItem('vue-token'),
-               responseType: "blob" 
-            }
-        }
+      let requestID = request.requestid;     
+      
       const path = `http://localhost:5000/requests/download/${requestID}`;      
-      axios.get(path, optionAxios)     
-          .then((response) => {
-            this.getRequests();
-            this.message = 'File downloaded!';
-            console.log(response)
-            if(response.headers["content-type"] === "application/pdf")
-            {
-              //FileDownload(response.data, 'request.png')
-                var fileURL=window.URL.createObjectURL(new Blob([response.data]));
-                    var fileLink=document.createElement('a');
-                    fileLink.href=fileURL;
-                    fileLink.setAttribute('download', 'report.pdf');
-                    document.body.appendChild(fileLink);
-                    fileLink.click();
-            }
-            else if(response.headers["content-type"] === "image/jpeg")
-            {
-              FileDownload(response.data, 'request.jpeg')
-            }
-            this.showMessage = true;
-        })
-        .catch((error) => {
-          console.error(error);
-          // this.getRequests();
-        });
+      axios({
+        url: path,
+        method: 'GET',
+        responseType: 'blob',
+        headers: {Authorization: "Bearer " + localStorage.getItem('vue-token')}
+      }).then(response => {
+
+        var fileURL=window.URL.createObjectURL(new Blob([response.data]));
+        var fileLink=document.createElement('a');
+        fileLink.href=fileURL;
+        fileLink.setAttribute('download', 'report.pdf');
+        document.body.appendChild(fileLink);
+        fileLink.click();
+      }).catch(error => {
+        console.log(error);
+      });      
     },    
     editRequest(request) {
       this.editForm = request;
