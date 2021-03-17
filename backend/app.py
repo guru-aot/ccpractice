@@ -85,12 +85,12 @@ def file_download(requestid):
     # arr = latest_file.split("/")
     # filename = arr[len(arr)-1]
     print(latest_file)  
-    try:
-        return send_file(latest_file, as_attachment=True)
+    try:       
+        return send_file(latest_file, as_attachment=False)
     except Exception as e:
-        print(e)        
-    return jsonClassEncoder.encode(True), 200
-
+        print(e)
+        return jsonClassEncoder.encode(False), 500 
+        
 @app.route('/requests/<requestid>', methods=['PUT', 'DELETE'])
 @cors_preflight('GET,POST,PUT,DELETE,OPTIONS')
 @oidc.accept_token(True)
