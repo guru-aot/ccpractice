@@ -5,9 +5,10 @@
         <h1>Requests</h1>
         <hr><br><br>
         <alert :message=message v-if="showMessage"></alert>
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.request-modal>
-          Add Request
-        </button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.request-modal>Add Request</button>
+        <br>
+        <br>
+        <input type="text" v-model="search" placeholder="search requests" />
         <br><br>
         <table class="table table-hover">
           <thead>
@@ -21,7 +22,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(request, index) in requests" :key="index">
+            <tr v-for="(request, index) in filteredRequests" :key="index">
               <!-- <td>{{ request.requestid }}</td> -->
               <td>{{ request.name }}</td>
               <td>{{ request.description }}</td>
@@ -195,12 +196,12 @@
 /* eslint-disable */
 import axios from 'axios';
 import Alert from './Alert.vue';
-import FileDownload from 'js-file-download'
 
 export default {
   data() {
     return {
       requests: [],
+      search:'',
       addRequestForm: {
         name: '',
         description: '',
@@ -221,6 +222,14 @@ export default {
       file: '',
       uploadedFile: null
     };
+  },
+  computed: {
+    filteredRequests: function() {
+      return this.requests.filter(request => {
+        return request.name.match(this.search)
+      })
+    }
+
   },
   components: {
     alert: Alert,
