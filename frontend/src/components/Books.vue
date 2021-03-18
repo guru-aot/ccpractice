@@ -166,7 +166,12 @@ export default {
     },
     addBook(payload) {
       const path = 'http://localhost:5000/books';
-      axios.post(path, payload)
+      var optionAxios = {
+            headers: {
+               Authorization: "Bearer " + localStorage.getItem('vue-token')
+            }
+        }
+      axios.post(path, payload, optionAxios)
         .then(() => {
           this.getBooks();
           this.message = 'Book added!';
