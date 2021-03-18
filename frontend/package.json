@@ -12,9 +12,10 @@
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
+    "js-file-download": "^0.4.12",
+    "keycloak-js": "10.0.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "keycloak-js": "10.0.2",
     "vuejs-logger": "1.5.4"
   },
   "devDependencies": {

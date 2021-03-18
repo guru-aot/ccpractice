@@ -5,7 +5,9 @@
         <h1>Requests</h1>
         <hr><br><br>
         <alert :message=message v-if="showMessage"></alert>
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.request-modal>Add Request</button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.request-modal>
+          Add Request
+        </button>
         <br><br>
         <table class="table table-hover">
           <thead>
@@ -24,7 +26,7 @@
               <td>{{ request.name }}</td>
               <td>{{ request.description }}</td>
               <td>{{ request.status }}</td>
-              <td>{{ request.createdby }}</td>             
+              <td>{{ request.createdby }}</td>
               <td>
                 <span v-if="request.updated">Yes</span>
                 <span v-else>No</span>
@@ -53,7 +55,7 @@
                   </button>
                   <button
                           type="button"
-                          class="btn btn-info btn-sm"                         
+                          class="btn btn-info btn-sm"
                           @click="downloadRequest(request)">
                       Download
                   </button>
@@ -180,7 +182,7 @@
             id="request-upload-modal"
             title="Upload"
             hide-footer>
-        <b-form @submit.prevent="onSubmitUpload" class="w-100">          
+        <b-form @submit.prevent="onSubmitUpload" class="w-100">
           <b-form-file v-model="uploadedFile" class="mt-3" plain></b-form-file>
           <div class="mt-3">Selected file: {{ uploadedFile ? uploadedFile.name : '' }}</div>
           <b-button type="submit" variant="primary">Submit</b-button>
@@ -233,7 +235,7 @@ export default {
         }
       axios.get(path, optionAxios)
         .then((res) => {
-          this.requests = res.data;          
+          this.requests = res.data;
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -265,8 +267,8 @@ export default {
       this.addRequestForm.description = '';
       this.addRequestForm.status = '';
       this.addRequestForm.createdby = '';
-      this.addRequestForm.updated = [];    
-      
+      this.addRequestForm.updated = [];
+
       this.editForm.requestid = '';
       this.editForm.name = '';
       this.editForm.description = '';
@@ -298,8 +300,8 @@ export default {
     uploadRequest(request) {
       this.editForm = request;
     },
-    onSubmitUpload() {   
-      this.$refs.uploadRequestModal.hide();   
+    onSubmitUpload() {
+      this.$refs.uploadRequestModal.hide();
       console.log(this.uploadedFile)
       let requestID = this.editForm.requestid;
       let formData = new FormData();
@@ -313,8 +315,8 @@ export default {
                'Content-Type': 'multipart/form-data'
             }
         }
-      const path = `http://localhost:5000/requests/upload/${requestID}`;      
-      axios.post(path, formData, optionAxios)     
+      const path = `http://localhost:5000/requests/upload/${requestID}`;
+      axios.post(path, formData, optionAxios)
           .then(() => {
             this.getRequests();
             this.message = 'File uploaded!';
@@ -324,12 +326,12 @@ export default {
           console.error(error);
           // this.getRequests();
         });
-    }, 
-    downloadRequest(request) {        
-      // this.$refs.uploadRequestModal.hide();         
-      let requestID = request.requestid;     
-      
-      const path = `http://localhost:5000/requests/download/${requestID}`;      
+    },
+    downloadRequest(request) {
+      // this.$refs.uploadRequestModal.hide();
+      let requestID = request.requestid;
+
+      const path = `http://localhost:5000/requests/download/${requestID}`;
       axios({
         url: path,
         method: 'GET',
@@ -345,8 +347,8 @@ export default {
         fileLink.click();
       }).catch(error => {
         console.log(error);
-      });      
-    },    
+      });
+    },
     editRequest(request) {
       this.editForm = request;
     },
