@@ -1,4 +1,6 @@
 import uuid
+import os
+import glob
 from flask import Flask, g, jsonify, request, json, send_file
 from flask_oidc import OpenIDConnect
 from flask_cors import CORS, cross_origin
@@ -6,9 +8,9 @@ from dataaccess.requestsDataAccess import RequestDataAccess
 from utils.jsonClassEncoder import JsonClassEncoder
 from config import init_app
 from utils.util import cors_preflight , reviewer, approver , hasrole
-import os
+from utils.email import Email
 from datetime import datetime, timedelta
-import glob
+
 
 # configuration
 DEBUG = True
@@ -17,6 +19,7 @@ app = init_app()
 
 requestDataAccess = RequestDataAccess()
 jsonClassEncoder = JsonClassEncoder()
+emailservice = Email()
 
 oidc = OpenIDConnect(app)
 
@@ -126,6 +129,7 @@ def addrequest():
 
     requestaddresult = requestDataAccess.AddRequest(name, description, status, createdby, updated)
     if requestaddresult.success == True:
+        emailservice.send('abin.antony@aot-technologies.com','TEST FOI TEST',"REQUEST ADDED")
         return jsonClassEncoder.encode(requestaddresult), 200
     else:
         return jsonClassEncoder.encode(requestaddresult), 500

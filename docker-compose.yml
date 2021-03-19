@@ -7,6 +7,9 @@ services:
     image: ccbackendimage
     ports:
       - 5000:5000
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@foicccb.cwpb3horhlgp.us-east-2.rds.amazonaws.com:5432/postgres
+      - FLASK_ENV:DEV
   FRONTEND:
     build:
       context: ./      
