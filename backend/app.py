@@ -54,7 +54,6 @@ def user():
 # sanity check route
 @app.route('/ping', methods=['GET'])
 @oidc.accept_token(True)
-@hasrole('approver_role')
 def ping_pong():
     return jsonify('pong!')
 
@@ -138,6 +137,37 @@ def getallrequests():
     requests = requestDataAccess.GetRequests()
     jsondata = json.dumps(requests)
     return jsondata, 200
+
+
+BOOKS = [
+    {
+        'id': uuid.uuid4().hex,
+        'title': 'On the Road',
+        'author': 'Jack Kerouac',
+        'read': True
+    },
+    {
+        'id': uuid.uuid4().hex,
+        'title': 'Harry Potter and the Philosopher\'s Stone',
+        'author': 'J. K. Rowling',
+        'read': False
+    },
+    {
+        'id': uuid.uuid4().hex,
+        'title': 'Green Eggs and Ham',
+        'author': 'Dr. Seuss',
+        'read': True
+    }
+]
+
+@app.route('/books')
+@cors_preflight('GET,POST,OPTIONS')
+@oidc.accept_token(True)
+def all_books():
+    response_object = {'status': 'success'}
+    response_object['books'] = BOOKS
+    return jsonify(response_object)
+
 
 
 if __name__ == '__main__':

@@ -5,7 +5,9 @@
         <h1>Requests</h1>
         <hr><br><br>
         <alert :message=message v-if="showMessage"></alert>
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.request-modal>Add Request</button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.request-modal>
+          Add Request
+        </button>
         <br>
         <br>
         <input type="text" v-model="search" placeholder="search requests" />
