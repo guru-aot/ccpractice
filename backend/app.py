@@ -1,13 +1,14 @@
-
 import uuid
-from flask import Flask, g, jsonify, request, json
+from flask import Flask, g, jsonify, request, json, send_file
 from flask_oidc import OpenIDConnect
 from flask_cors import CORS, cross_origin
-from entities.request import Request
 from dataaccess.requestsDataAccess import RequestDataAccess
 from utils.jsonClassEncoder import JsonClassEncoder
 from config import init_app
 from utils.util import cors_preflight , reviewer, approver , hasrole
+import os
+from datetime import datetime, timedelta
+import glob
 
 # configuration
 DEBUG = True
@@ -19,27 +20,7 @@ jsonClassEncoder = JsonClassEncoder()
 
 oidc = OpenIDConnect(app)
 
-BOOKS = [
-    {
-        'id': uuid.uuid4().hex,
-        'title': 'On the Road',
-        'author': 'Jack Kerouac',
-        'read': True
-    },
-    {
-        'id': uuid.uuid4().hex,
-        'title': 'Harry Potter and the Philosopher\'s Stone',
-        'author': 'J. K. Rowling',
-        'read': False
-    },
-    {
-        'id': uuid.uuid4().hex,
-        'title': 'Green Eggs and Ham',
-        'author': 'Dr. Seuss',
-        'read': True
-    }
-]
-
+UploadFolder = os.path.join(app.root_path, 'attachments')
 
 @app.route('/')
 def home():
@@ -73,76 +54,120 @@ def user():
 # sanity check route
 @app.route('/ping', methods=['GET'])
 @oidc.accept_token(True)
-@hasrole('approver_role')
 def ping_pong():
     return jsonify('pong!')
 
-def remove_book(book_id):
-    for book in BOOKS:
-        if book['id'] == book_id:
-            BOOKS.remove(book)
-            return True
-    return False
-
-
-@app.route('/books')
+@app.route('/requests/upload/<requestid>', methods=['GET','POST'])
 @cors_preflight('GET,POST,OPTIONS')
 @oidc.accept_token(True)
-@hasrole('reviewer_role')
-def all_books():
-    response_object = {'status': 'success'}
-    if request.method == 'POST':
-        post_data = request.get_json()
-        BOOKS.append({
-            'id': uuid.uuid4().hex,
-            'title': post_data.get('title'),
-            'author': post_data.get('author'),
-            'read': post_data.get('read')
-        })
-        response_object['message'] = 'Book added!'
-    else:
-        response_object['books'] = BOOKS
-    return jsonify(response_object)
+def file_upload(requestid):  
+    fileStorage = request.files['image']
+    uploadFolder = UploadFolder + '/' + requestid + '/'
+    uploadFolder = uploadFolder.replace('\\','/')
+    # uploadFolder = app.config['UPLOAD_FOLDER'] + requestid + '/' 
+    if not os.path.isdir(uploadFolder):
+        os.mkdir(uploadFolder)
+    fileName = fileStorage.filename.split(".")
+    fileStorage.save(os.path.join(uploadFolder, fileName[0] + datetime.now().strftime("%m%d%Y%H%M%S") + '.' + fileName[1]))    
+    print(' * received form with', request.files['image'])  
+    return jsonClassEncoder.encode(True), 200
 
-
-
-@app.route('/books/<book_id>', methods=['PUT', 'DELETE'])
-def single_book(book_id):
+@app.route('/requests/download/<requestid>', methods=['GET','POST'])
+@cors_preflight('GET,POST,OPTIONS')
+@oidc.accept_token(True)
+def file_download(requestid): 
+    folderpath = UploadFolder + '/' + requestid + '/'    
+    folderpath = folderpath.replace('\\','/')
+    list_of_files = glob.glob(folderpath + '*') # * means all if need specific format then *.csv
+    latest_file = max(list_of_files, key=os.path.getctime)
+    latest_file = latest_file.replace("\\", "/")
+    # arr = latest_file.split("/")
+    # filename = arr[len(arr)-1]
+    print(latest_file)  
+    try:       
+        return send_file(latest_file, as_attachment=False)
+    except Exception as e:
+        print(e)
+        return jsonClassEncoder.encode(False), 500 
+        
+@app.route('/requests/<requestid>', methods=['PUT', 'DELETE'])
+@cors_preflight('GET,POST,PUT,DELETE,OPTIONS')
+@oidc.accept_token(True)
+def single_request(requestid):
     response_object = {'status': 'success'}
     if request.method == 'PUT':
-        post_data = request.get_json()
-        remove_book(book_id)
-        BOOKS.append({
-            'id': uuid.uuid4().hex,
-            'title': post_data.get('title'),
-            'author': post_data.get('author'),
-            'read': post_data.get('read')
-        })
-        response_object['message'] = 'Book updated!'
+        requestjson = request.get_json()
+        name = requestjson['name']
+        description = requestjson['description']
+        status = requestjson['status']
+        createdby = requestjson['createdby']   
+        updated = requestjson['updated']
+        requestaddresult = requestDataAccess.EditRequest(requestid, name, description, status, createdby, updated)
+        response_object['message'] = 'Request updated!'
     if request.method == 'DELETE':
-        remove_book(book_id)
-        response_object['message'] = 'Book removed!'
-    return jsonify(response_object)
+        requestaddresult = requestDataAccess.DeleteRequest(requestid)
+        response_object['message'] = 'Request removed!'
+    if requestaddresult.success == True:
+        return jsonClassEncoder.encode(requestaddresult), 200
+    else:
+        return jsonClassEncoder.encode(requestaddresult), 500
 
-@app.route('/requests/add', methods=['POST', 'GET'])
+@app.route('/requests/add', methods = ['POST', 'GET'])
+@cors_preflight('GET,POST,OPTIONS')
+@oidc.accept_token(True)
 def addrequest():
     requestjson = request.get_json()
 
     name = requestjson['name']
     description = requestjson['description']
     status = requestjson['status']
+    createdby = requestjson['createdby']   
+    updated = requestjson['updated']
 
-    requestaddresult = requestDataAccess.AddRequest(name, description, status)
+    requestaddresult = requestDataAccess.AddRequest(name, description, status, createdby, updated)
     if requestaddresult.success == True:
         return jsonClassEncoder.encode(requestaddresult), 200
     else:
         return jsonClassEncoder.encode(requestaddresult), 500
 
-@app.route('/requests/all', methods=['GET'])
+@app.route('/requests/all')
+@cors_preflight('GET,POST,OPTIONS')
+@oidc.accept_token(True)
 def getallrequests():
     requests = requestDataAccess.GetRequests()
     jsondata = json.dumps(requests)
     return jsondata, 200
+
+
+BOOKS = [
+    {
+        'id': uuid.uuid4().hex,
+        'title': 'On the Road',
+        'author': 'Jack Kerouac',
+        'read': True
+    },
+    {
+        'id': uuid.uuid4().hex,
+        'title': 'Harry Potter and the Philosopher\'s Stone',
+        'author': 'J. K. Rowling',
+        'read': False
+    },
+    {
+        'id': uuid.uuid4().hex,
+        'title': 'Green Eggs and Ham',
+        'author': 'Dr. Seuss',
+        'read': True
+    }
+]
+
+@app.route('/books')
+@cors_preflight('GET,POST,OPTIONS')
+@oidc.accept_token(True)
+def all_books():
+    response_object = {'status': 'success'}
+    response_object['books'] = BOOKS
+    return jsonify(response_object)
+
 
 
 if __name__ == '__main__':

@@ -1,0 +1,20 @@
+version: '3'
+services:  
+  BACKEND:
+    build:
+      context: ./      
+      dockerfile: backend/dockerfile
+    image: ccbackendimage
+    ports:
+      - 5000:5000
+  FRONTEND:
+    build:
+      context: ./      
+      dockerfile: frontend/Dockerfile
+    image: ccfrontendimage
+    ports:
+      - 8080:8080
+    depends_on:
+      - BACKEND           
+volumes:
+  dbdata:

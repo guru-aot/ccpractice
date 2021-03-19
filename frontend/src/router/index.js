@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Vue from 'vue';
 import Router from 'vue-router';
+import Requests from '../components/Requests.vue';
 import Books from '../components/Books.vue';
 import Ping from '../components/Ping.vue';
 import Home from '../components/Home.vue';
@@ -15,9 +16,25 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/Dashboard',
+      path: '/login',
+      name: 'Login',
+      component: Requests,
+      meta: {
+        requiresAuth: true,
+      }
+    },
+    {
+      path: '/books',
       name: 'Books',
       component: Books,
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: '/dashboard',
+      name: 'Requests',
+      component: Requests,
       meta: {
         requiresAuth: true,
       },
