@@ -14,7 +14,13 @@ services:
     build:
       context: ./      
       dockerfile: frontend/Dockerfile
-    image: ccfrontendimage
+      args:
+        - API_BASE_URL=http://localhost:5000/
+        - KEYCLOAK_URL=https://iam.aot-technologies.com/auth/
+        - KEYCLOAK_REALM=foirealm
+        - KEYCLOAK_CLIENT=foiclientfe
+        - KEYCLOAK_CLIENT_SECRET=fdf3be98-6dfa-4a5a-a0fe-ef644ffbe106
+    image: ccfrontendimage    
     ports:
       - 8080:8080
     depends_on:
