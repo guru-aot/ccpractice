@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile.vue renders props when passed 1`] = `
+<v-card-stub
+  class="mx-auto"
+  loaderheight="4"
+  maxwidth="600"
+  tag="div"
+>
+  <v-toolbar-stub
+    extensionheight="48"
+    flat="true"
+    src=""
+    tag="header"
+    tile="true"
+  >
+    <v-toolbar-title-stub
+      class="grey--text"
+    >
+      My Preferences
+    </v-toolbar-title-stub>
+     
+    <div
+      class="flex-grow-1"
+    />
+  </v-toolbar-stub>
+   
+  <v-divider-stub />
+   
+  <!---->
+   
+  <!---->
+   
+  <v-card-text-stub>
+    <v-form-stub>
+      <v-container-stub
+        tag="div"
+      >
+        <v-row-stub
+          tag="div"
+        >
+          <v-col-stub
+            cols="12"
+            tag="div"
+          >
+            <h1
+              class="display-2 font-weight-bold mb-3"
+            >
+              Hello 
+            </h1>
+          </v-col-stub>
+        </v-row-stub>
+      </v-container-stub>
+    </v-form-stub>
+  </v-card-text-stub>
+</v-card-stub>
+`;
