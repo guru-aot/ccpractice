@@ -38,7 +38,7 @@ export const actions: ActionTree<RequestState, RootState> = {
     axios
       .get(BASE_URL + REQUESTURL)
       .then((r: any) => r.data)
-      .then((data: RequestModel[]) => {  
+      .then((data: RequestModel[]) => {
         commit('SET_REQUESTLIST', data);
         commit('SET_LOADING', false);
       });
