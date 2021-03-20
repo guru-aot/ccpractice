@@ -3,7 +3,7 @@
     <v-layout text-center wrap>
       <v-flex mb-4>
         <h1 class="display-2 font-weight-bold mb-3">Hello World</h1>
-        <p class="subheading font-weight-regular">welcome home! This is Kulpreet</p>
+        <p class="subheading font-weight-regular">welcome home! This is AOT</p>
       </v-flex>
     </v-layout>
   </v-container>

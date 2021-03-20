@@ -94,12 +94,13 @@ export const actions: ActionTree<KeyCloakState, RootState> = {
    * @param {*} keycloak
    */
   userRedirect(store: any, path) {
-    if (path === '/login') {
-      if (store.state.isUser) {
-        router.push({ path: '/' });
-      } else if (store.state.isAdmin) {
-        router.push({ path: '/author' });
-      }
-    }
+    // if (path === '/login') {
+    //   if (store.state.isUser) {
+    //     router.push({ path: '/' });
+    //   } else if (store.state.isAdmin) {
+    //     router.push({ path: '/author' });
+    //   }
+    // }
+    router.push({ path: '/requests' });
   },
 };

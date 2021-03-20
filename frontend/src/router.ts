@@ -27,6 +27,12 @@ const router = new Router({
       component: () =>
         import(/* webpackChunkName: "ListLoanBook" */ './views/Profile.vue'),
     },
+    {
+      path: '/requests',
+      name: 'requests',
+      component: () =>
+        import(/* webpackChunkName: "Request" */ './views/Request.vue'),
+    },
   ],
 });
 
