@@ -31,9 +31,28 @@ export const actions: ActionTree<RequestState, RootState> = {
 
   updateRequest({ commit, dispatch }, data) {
     commit('SET_LOADING', true);
+    commit('SET_REQUEST', data);
     const editRequestURL = EDITREQUESTURL.replace('<requestid>', data.requestid);
     axios
-      .post(BASE_URL + editRequestURL, data)
+      .put(BASE_URL + editRequestURL, data)
+      .then(_ => {
+        commit('SET_LOADING', false);
+        commit('SET_REQUEST_SUCCESSFULLY', true);
+        commit('SET_REQUEST_ERROR', false);
+        dispatch('loadRequest');
+      })
+      .catch(() => {
+        commit('SET_CONTACT_SUCCESSFULLY', false);
+        commit('SET_CONTACT_ERROR', true);
+      });
+  },
+
+  deleteRequest({ commit, dispatch }, data) {
+    commit('SET_LOADING', true);
+    commit('SET_REQUEST', data);
+    const deleteRequestURL = EDITREQUESTURL.replace('<requestid>', data.requestid);
+    axios
+      .delete(BASE_URL + deleteRequestURL)
       .then(_ => {
         commit('SET_LOADING', false);
         commit('SET_REQUEST_SUCCESSFULLY', true);

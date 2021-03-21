@@ -7,6 +7,7 @@
         </button> -->
       <!-- <AddRequest v-show="this.showAddRequest" /> -->
       <AddRequest />
+      <!-- <Request /> -->
     </div>
     <div class="mt-6">
       <ListRequest />
@@ -17,10 +18,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import AddRequest from '@/components/Request/AddRequest.vue'; // @ is an alias to /src
+// import Request from '@/components/Request/Request.vue';
 import ListRequest from '@/components/Request/ListRequest.vue';
 @Component({
   components: {
     AddRequest,
+    // Request,
     ListRequest
   }
 })

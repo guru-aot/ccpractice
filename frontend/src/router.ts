@@ -31,7 +31,7 @@ const router = new Router({
       path: '/requests',
       name: 'requests',
       component: () =>
-        import(/* webpackChunkName: "Request" */ './views/Request.vue'),
+        import(/* webpackChunkName: "Request" */ './views/Requests.vue'),
     },
   ],
 });

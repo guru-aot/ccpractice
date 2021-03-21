@@ -21,9 +21,19 @@ export const mutations: MutationTree<RequestState> = {
    * @param payload header list
    */
 
-   SET_REQUESTHEADER(state, payload: any) {
+  SET_REQUESTHEADER(state, payload: any) {
     state.requestHeaders = payload;
   },
+
+  /**
+   * Sets request
+   * @param {*} state
+   * @param payload request
+   */
+
+  SET_REQUEST(state, payload: any) {
+      state.request = payload;
+    },
 
   /**
    * Sets request

@@ -6,10 +6,20 @@ import { RequestState } from './types';
 import { RootState } from '../../types';
 
 /**
- * author state
+ * request state
  */
 export const state: RequestState = {
   requestHeaders: [],
+  request: {
+    name: '',
+    description: '',
+    requestid: '',
+    status: '',
+    createdby: '',
+    created_at: '',
+    updated_at: '',
+    updated: '',
+  },
   requestList: [],
   loading: false,
   successStatus: false,
