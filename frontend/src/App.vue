@@ -6,7 +6,6 @@
 </template>
 
 <script>
-/* eslint-disable */
 import Home from "./components/Home.vue";
 import Navigation from "./components/Navigation.vue";
 

@@ -1,13 +1,10 @@
-/* eslint-disable */
 import Vue from 'vue';
 import Router from 'vue-router';
+import * as Keycloak from 'keycloak-js';
 import Requests from '../components/Requests.vue';
 import Books from '../components/Books.vue';
 import Ping from '../components/Ping.vue';
 import Home from '../components/Home.vue';
-
-
-import * as Keycloak from 'keycloak-js';
 
 Vue.use(Router);
 
@@ -21,7 +18,7 @@ const router = new Router({
       component: Requests,
       meta: {
         requiresAuth: true,
-      }
+      },
     },
     {
       path: '/books',
@@ -52,55 +49,47 @@ const router = new Router({
   ],
 });
 
-
-
 router.beforeEach((to, from, next) => {
- console.log(to);
- if(to.matched.some(record => record.meta.requiresAuth)) {
-     
-  const initOptions = {
-    url: 'https://iam.aot-technologies.com/auth', realm: 'foirealm', clientId: 'foiclientfe', onLoad: 'login-required',
-  };
-  const keycloak = Keycloak(initOptions);
-
+  // console.log(to);
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    const initOptions = {
+      url: 'https://iam.aot-technologies.com/auth', realm: 'foirealm', clientId: 'foiclientfe', onLoad: 'login-required',
+    };
+    const keycloak = Keycloak(initOptions);
     keycloak.init({ onLoad: initOptions.onLoad }).then((auth) => {
-      console.log(auth);
+      // console.log(auth);
       if (!auth) {
         window.location.reload();
       } else {
-        Vue.$log.info('Authenticated'); 
-        var userprofile =  keycloak.loadUserProfile().then(p=>{
-          console.log(p.username);
-          console.log(p.email);
-        })
-       
-        localStorage.setItem("vue-token", keycloak.token);
-        localStorage.setItem("vue-refresh-token", keycloak.refreshToken);
+        Vue.$log.info('Authenticated');
+        // var userprofile =  keycloak.loadUserProfile().then(p => {
+        //   console.log(p.username);
+        //   console.log(p.email);
+        // })
+        localStorage.setItem('vue-token', keycloak.token);
+        localStorage.setItem('vue-refresh-token', keycloak.refreshToken);
         next();
-    }
+      }
 
-    //Token Refresh
+      // Token Refresh
       setInterval(() => {
         keycloak.updateToken(70).then((refreshed) => {
           if (refreshed) {
-            Vue.$log.info('Token refreshed' + refreshed);
+            Vue.$log.info('Token refreshed');
           } else {
-            Vue.$log.warn('Token not refreshed, valid for '
-              + Math.round(keycloak.tokenParsed.exp + keycloak.timeSkew - new Date().getTime() / 1000) + ' seconds');
+            Vue.$log.warn(`Token not refreshed, valid for 
+              ${(Math.round(keycloak.tokenParsed.exp + keycloak.timeSkew - new Date().getTime() / 1000)).toString()} seconds`);
           }
         }).catch(() => {
           Vue.$log.error('Failed to refresh token');
         });
       }, 6000);
-
     }).catch(() => {
-      Vue.$log.error('Authenticated Failed');
+      Vue.$log.error('Authentication failed');
     });
+  } else {
+    next();
+  }
+});
 
- }
- else{
-   next();
- } 
-})
-
-export default router
+export default router;

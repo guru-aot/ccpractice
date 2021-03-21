@@ -6,7 +6,6 @@
 </template>
 
 <script>
-/* eslint-disable */
 export default {
   props: ['message'],
 };
