@@ -124,10 +124,9 @@ def addrequest():
     name = requestjson['name']
     description = requestjson['description']
     status = requestjson['status']
-    createdby = requestjson['createdby']   
-    updated = requestjson['updated']
+    createdby = requestjson['createdby']    
 
-    requestaddresult = requestDataAccess.AddRequest(name, description, status, createdby, updated)
+    requestaddresult = requestDataAccess.AddRequest(name, description, status, createdby)
     if requestaddresult.success == True:
         emailservice.send('abin.antony@aot-technologies.com','TEST FOI TEST',"REQUEST ADDED")
         return jsonClassEncoder.encode(requestaddresult), 200
