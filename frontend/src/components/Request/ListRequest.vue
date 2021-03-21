@@ -18,9 +18,10 @@
           <thead>
             <tr>
               <th class="text-left">ID</th>
-              <th class="text-left">name</th>
-              <th class="text-left">description</th>
-              <th class="text-left">status</th>
+              <th class="text-left">Name</th>
+              <th class="text-left">Description</th>
+              <th class="text-left">Status</th>
+              <th class="text-left">Created By</th>
             </tr>
           </thead>
           <tbody>
@@ -29,6 +30,7 @@
               <td>{{ request.name }}</td>
               <td>{{ request.description }}</td>
               <td>{{ request.status }}</td>
+              <td>{{ request.createdby }}</td>
             </tr>
           </tbody>
         </template>

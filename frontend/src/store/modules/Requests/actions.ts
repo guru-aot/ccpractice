@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex';
 import { RequestState, RequestModel } from './types';
 import { RootState } from '../../types';
-import { BASE_URL,  REQUESTURL } from '@/config/urlList';
+import { BASE_URL,  REQUESTURL, ADDREQUESTURL } from '@/config/urlList';
 import axios from '@/lib/axios';
 
 /**
@@ -16,7 +16,7 @@ export const actions: ActionTree<RequestState, RootState> = {
   addRequest({ commit, dispatch }, data) {
     commit('SET_LOADING', true);
     axios
-      .post(BASE_URL + REQUESTURL, data)
+      .post(BASE_URL + ADDREQUESTURL, data)
       .then(_ => {
         commit('SET_LOADING', false);
         commit('SET_REQUEST_SUCCESSFULLY', true);

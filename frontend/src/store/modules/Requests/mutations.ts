@@ -38,7 +38,7 @@ export const mutations: MutationTree<RequestState> = {
    * @param {*} state
    * @param {*} payload
    */
-  SET_AUTHOR_ERROR(state, payload: any) {
+   SET_REQUEST_ERROR(state, payload: any) {
     state.errorStatus = payload;
   },
 };

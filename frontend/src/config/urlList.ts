@@ -3,3 +3,4 @@ export const BASE_URL =
 export const PROFILE_URL = 'users';
 export const AUTHORURL = 'authors';
 export const REQUESTURL = 'requests/all';
+export const ADDREQUESTURL = 'requests/add';
