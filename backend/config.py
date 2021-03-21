@@ -11,11 +11,15 @@ from dotenv import find_dotenv, load_dotenv
 
 setup_logging(os.path.join(BaseConfig.PROJECT_ROOT, 'logging.conf'))  # important to do this first
 
-def init_app(run_mode=os.getenv('FLASK_ENV', 'production')):
+def init_app(run_mode=os.getenv('FLASK_ENV', 'development')):
     app = Flask(__name__)
     app.config.from_object(CONFIG[run_mode])
     CORS(app) 
 
+# def init_app():
+#     app = Flask(__name__)
+#     # app.config.from_object(CONFIG[run_mode])
+#     CORS(app) 
 
     app.config.update({
         'SECRET_KEY': 'FOICLIENTAPP',          

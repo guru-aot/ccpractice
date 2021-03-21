@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Navbar/>
+    <Navigation/>
     <router-view/>
   </div>
 </template>
@@ -8,7 +8,7 @@
 <script>
 /* eslint-disable */
 import Home from "./components/Home.vue";
-import Navbar from "./components/Navigation";
+import Navigation from "./components/Navigation.vue";
 
 
 export default {
@@ -16,7 +16,7 @@ export default {
   props: ["keycloak"],
   components: {
     Home,
-    Navbar
+    Navigation
   },
   // data() {
     

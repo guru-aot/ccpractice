@@ -18,7 +18,7 @@
 <script>
 /* eslint-disable */
     export default {
-    name:'Navbar',
+    name:'Navigation',
     // data(){
     //     return '';
     // }

@@ -5,8 +5,7 @@
         <h1>Requests</h1>
         <hr><br><br>
         <alert :message=message v-if="showMessage"></alert>
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.request-modal
-        @click="onAddRequest">
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.request-modal>
           Add Request
         </button>
         <br>
@@ -70,8 +69,118 @@
         </table>
       </div>
     </div>
-    <AddRequest v-show="this.showAddForm" @add-request="addRequest" />
-    <EditRequest v-show="this.showEditForm" @update-request="updateRequest" v-bind="this.request" />
+    <b-modal ref="addRequestModal"
+            id="request-modal"
+            title="Add a new request"
+            hide-footer>
+      <b-form @submit="onSubmit" @reset="onReset" class="w-100">
+      <b-form-group id="form-name-group"
+                    label="Name:"
+                    label-for="form-name-input">
+          <b-form-input id="form-name-input"
+                        type="text"
+                        v-model="addRequestForm.name"
+                        required
+                        placeholder="Enter Name">
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-description-group"
+                      label="Description:"
+                      label-for="form-description-input">
+            <b-form-input id="form-description-input"
+                          type="text"
+                          v-model="addRequestForm.description"
+                          required
+                          placeholder="Enter description">
+            </b-form-input>
+          </b-form-group>
+          <b-form-group id="form-status-group"
+                      label="Status:"
+                      label-for="form-status-input">
+            <b-form-input id="form-status-input"
+                          type="text"
+                          v-model="addRequestForm.status"
+                          required
+                          placeholder="Enter status">
+            </b-form-input>
+          </b-form-group>
+           <b-form-group id="form-createdby-group"
+                      label="Created By:"
+                      label-for="form-createdby-input">
+            <b-form-input id="form-createdby-input"
+                          type="text"
+                          v-model="addRequestForm.createdby"
+                          required
+                          placeholder="Enter Created By">
+            </b-form-input>
+          </b-form-group>
+        <b-form-group id="form-updated-group">
+          <b-form-checkbox-group v-model="addRequestForm.updated" id="form-checks">
+            <b-form-checkbox value="true">Updated?</b-form-checkbox>
+          </b-form-checkbox-group>
+        </b-form-group>
+        <b-button-group>
+          <b-button type="submit" variant="primary">Submit</b-button>
+          <b-button type="reset" variant="danger">Reset</b-button>
+        </b-button-group>
+      </b-form>
+    </b-modal>
+    <b-modal ref="editRequestModal"
+            id="request-update-modal"
+            title="Update"
+            hide-footer>
+      <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
+      <b-form-group id="form-name-edit-group"
+                    label="Name:"
+                    label-for="form-name-edit-input">
+          <b-form-input id="form-name-edit-input"
+                        type="text"
+                        v-model="editForm.name"
+                        required
+                        placeholder="Enter Name">
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-description-edit-group"
+                      label="Description:"
+                      label-for="form-description-edit-input">
+            <b-form-input id="form-description-edit-input"
+                          type="text"
+                          v-model="editForm.description"
+                          required
+                          placeholder="Enter description">
+            </b-form-input>
+          </b-form-group>
+          <b-form-group id="form-status-edit-group"
+                      label="Status:"
+                      label-for="form-status-edit-input">
+            <b-form-input id="form-status-edit-input"
+                          type="text"
+                          v-model="editForm.status"
+                          required
+                          placeholder="Enter status">
+            </b-form-input>
+          </b-form-group>
+          <b-form-group id="form-createdby-edit-group"
+                      label="Created By:"
+                      label-for="form-createdby-edit-input">
+            <b-form-input id="form-createdby-edit-input"
+                          type="text"
+                          v-model="editForm.createdby"
+                          required
+                          placeholder="Enter Created By">
+            </b-form-input>
+          </b-form-group>
+        <!-- <b-form-group id="form-updated-edit-group">
+          <b-form-checkbox-group v-model="editForm.updated" id="form-checks"> -->
+            <b-form-checkbox checked="true">Updated?</b-form-checkbox>
+          <!-- </b-form-checkbox-group>
+        </b-form-group> -->
+        <b-button-group>
+          <b-button type="submit" variant="primary">Update</b-button>
+          <b-button type="reset" variant="danger">Cancel</b-button>
+        </b-button-group>
+      </b-form>
+    </b-modal>
     <b-modal ref="uploadRequestModal"
             id="request-upload-modal"
             title="Upload"
@@ -89,28 +198,22 @@
 /* eslint-disable */
 import axios from 'axios';
 import Alert from './Alert.vue';
-import AddRequest from './AddRequest.vue';
-import EditRequest from './EditRequest.vue';
 
 export default {
-  name: "Requests",
-  // props: {
-  //       showForm: Boolean,
-  // },
-  components: {
-    // AddRequest: () => import('./AddRequest.vue')
-    AddRequest,
-    EditRequest,
-  },
   data() {
     return {
-      showAddForm: false,
-      showEditForm: false,
       requests: [],
-      search:'',     
+      search:'',
+      addRequestForm: {
+        name: '',
+        description: '',
+        status: '',
+        createdby: '',
+        updated: []
+      },
       message: '',
       showMessage: false,
-      request: {
+      editForm: {
         requestid: '',
         name: '',
         description: '',
@@ -150,9 +253,6 @@ export default {
           console.error(error);
         });
     },
-    onAddRequest(){
-      this.showAddForm = true;
-    },
     addRequest(payload) {
       const path = 'http://localhost:5000/requests/add';
       var optionAxios = {
@@ -172,7 +272,42 @@ export default {
           console.log(`Post Req Error: ${error}`);
           this.getRequests();
         });
-    },    
+    },
+    initForm() {
+      this.addRequestForm.name = '';
+      this.addRequestForm.description = '';
+      this.addRequestForm.status = '';
+      this.addRequestForm.createdby = '';
+      this.addRequestForm.updated = [];
+
+      this.editForm.requestid = '';
+      this.editForm.name = '';
+      this.editForm.description = '';
+      this.editForm.status = '';
+      this.editForm.createdby = '';
+      this.editForm.updated = [];
+    },
+    onSubmit(evt) {
+      evt.preventDefault();
+      this.$refs.addRequestModal.hide();
+      let updated = false;
+      if (this.addRequestForm.updated[0]) updated = true;
+      const payload = {
+        name: this.addRequestForm.name,
+        description: this.addRequestForm.description,
+        status: this.addRequestForm.status,
+        createdby: this.addRequestForm.createdby,
+        updated, // property shorthand
+      };
+      console.log(payload)
+      this.addRequest(payload);
+      this.initForm();
+    },
+    onReset(evt) {
+      evt.preventDefault();
+      this.$refs.addRequestModal.hide();
+      this.initForm();
+    },
     uploadRequest(request) {
       this.editForm = request;
     },
@@ -226,9 +361,22 @@ export default {
       });
     },
     editRequest(request) {
-      this.showEditForm = true;
-      this.request = request;
-    },   
+      this.editForm = request;
+    },
+    onSubmitUpdate(evt) {
+      evt.preventDefault();
+      this.$refs.editRequestModal.hide();
+      let updated = true;
+      if (this.editForm.updated[0]) updated = true;
+      const payload = {
+        name: this.editForm.name,
+        description: this.editForm.description,
+        status: this.editForm.status,
+        createdby: this.editForm.createdby,
+        updated, // property shorthand
+      };
+      this.updateRequest(payload, this.editForm.requestid);
+    },
     updateRequest(payload, requestID) {
       const path = `http://localhost:5000/requests/${requestID}`;
       var optionAxios = {
