@@ -11,7 +11,9 @@ export const getters: GetterTree<RequestState, RootState> = {
    * @param {*} state
    * @returns  {object} author
    */
-
+  getRequestHeaders(state) {
+    return state.requestHeaders;
+  },
   getRequestList(state) {
     return state.requestList;
   },
