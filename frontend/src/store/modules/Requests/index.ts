@@ -9,6 +9,7 @@ import { RootState } from '../../types';
  * author state
  */
 export const state: RequestState = {
+  requestHeaders: [],
   requestList: [],
   loading: false,
   successStatus: false,

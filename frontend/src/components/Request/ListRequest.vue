@@ -13,7 +13,12 @@
     <v-divider></v-divider>
     <v-card-text v-if="getRequestList && getRequestList.length == 0">No Author found. Add one</v-card-text>
     <v-card-text v-if="getRequestList && getRequestList.length != 0">
-      <v-simple-table fixed-header>
+      <v-data-table 
+      :headers="getRequestHeaders"     
+      :items="getRequestList"
+      :items-per-page="5"      
+      >
+      <!-- <v-simple-table fixed-header>
         <template v-slot:default>
           <thead>
             <tr>
@@ -34,7 +39,8 @@
             </tr>
           </tbody>
         </template>
-      </v-simple-table>
+      </v-simple-table> -->
+      </v-data-table>
     </v-card-text>
   </v-card>
 </template>
@@ -47,6 +53,7 @@ const RequestModule = namespace('RequestModule');
 export default class ListRequestComponent extends Vue {
   @RequestModule.Action('loadRequest') public loadRequest!: any;
   @RequestModule.Getter('getRequestList') public getRequestList!: [];
+  @RequestModule.Getter('getRequestHeaders') public getRequestHeaders!: [];
 
   private mounted() {
     this.loadRequest();

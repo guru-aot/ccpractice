@@ -1,4 +1,5 @@
 export interface RequestState {
+  requestHeaders: [];
   requestList: RequestModel[];
   loading?: boolean;
   successStatus?: boolean;

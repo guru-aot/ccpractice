@@ -14,10 +14,21 @@ export const mutations: MutationTree<RequestState> = {
   SET_LOADING(state, flag: boolean) {
     state.loading = flag;
   },
+
+  /**
+   * Sets requestHeader
+   * @param {*} state
+   * @param payload header list
+   */
+
+   SET_REQUESTHEADER(state, payload: any) {
+    state.requestHeaders = payload;
+  },
+
   /**
    * Sets request
    * @param {*} state
-   * @param payload author list
+   * @param payload request list
    */
 
   SET_REQUESTLIST(state, payload: any) {
