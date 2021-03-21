@@ -45,3 +45,6 @@ class Request(db.Model):
 
 db.create_all()
 db.session.commit()
+
+if __name__ == '__main__':
+    app.run(debug=True, host="0.0.0.0")
