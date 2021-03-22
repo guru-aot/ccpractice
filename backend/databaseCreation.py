@@ -7,6 +7,7 @@
 # from your command pront, tested just on Windows.
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import UUID
 import json
 import os
 import datetime
@@ -39,7 +40,8 @@ class Request(db.Model):
     createdby = db.Column(db.String(25), unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now().isoformat())
     updated_at = db.Column(db.TIMESTAMP, default=datetime.datetime.now().isoformat())
-    updated = db.Column(db.Boolean, default=False) 
+    updated = db.Column(db.Boolean, default=False)
+    userid = db.Column(UUID(as_uuid=True), unique=False, nullable=False)
     def get_id(self):
         return text_type(self.requestid)
 
