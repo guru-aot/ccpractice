@@ -36,6 +36,7 @@
               class="mb-2"
               v-bind="attrs"
               v-on="on"
+              v-show="!disabled"
             >
               New Request
             </v-btn>
@@ -56,6 +57,7 @@
                     <v-text-field
                       v-model="editedItem.name"
                       label="Request Name"
+                      :disabled="disabled"                   
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -66,6 +68,7 @@
                     <v-text-field
                       v-model="editedItem.description"
                       label="Description"
+                      :disabled="disabled"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -73,10 +76,14 @@
                     sm="6"
                     md="4"
                   >
-                    <v-text-field
-                      v-model="editedItem.status"
-                      label="Status"
-                    ></v-text-field>
+                  <v-select
+                    :items="statusArray"
+                    label="Status"
+                    v-model="editedItem.status"
+                    dense
+                    solo
+                    v-show="disabled"
+                  ></v-select>                   
                   </v-col>
                   <v-col
                     cols="12"
@@ -86,6 +93,7 @@
                     <v-text-field
                       v-model="editedItem.createdby"
                       label="Created By"
+                      :disabled="disabled"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -130,10 +138,18 @@
         </v-dialog>
       </v-toolbar>
       <!-- <Request /> -->
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
       <v-data-table
       :headers="getRequestHeaders"
       :items="getRequestList"
       :items-per-page="10"
+      :search="search"
       >
        <template v-slot:item="row">
         <tr>
@@ -179,7 +195,10 @@ export default class ListRequestComponent extends Vue {
   public form: boolean = false;
   private dialog: boolean = false;
   private dialogDelete: boolean = false;
+  private disabled: boolean = false;
   private editedIndex: number = -1;
+  private search: string = '';
+  private statusArray: string[] = ['approved', 'rejected'];
   private defaultItem: object = {
       name: '',
       description: '',
@@ -199,7 +218,16 @@ export default class ListRequestComponent extends Vue {
   get formTitle() {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
   }
+    private setEditable() {
+    const userRoles = sessionStorage.getItem('user-roles');
+    const approverRole = !!userRoles ? userRoles.includes('approver_role') : false;
+    const userRole = !!userRoles ? userRoles.includes('user_role') : false;
+    if (approverRole) {
+      this.disabled = true;
+    }
+  }
   private mounted() {
+    this.setEditable();
     this.loadRequest();
   }
   private close() {

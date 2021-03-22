@@ -32,6 +32,7 @@ export class KeycloakService {
    * Logouts keycloak service
    */
   public static logout() {
+    sessionStorage.clear();
     KeycloakService.keycloak.logout();
   }
 
@@ -134,9 +135,9 @@ export class KeycloakService {
             silentCheckSsoRedirectUri,
           );
 
-          KeycloakService.keycloak.loadUserProfile().success(profile => {
-            store.dispatch('KeyCloakModule/setUserProfile', profile);
-          });
+          // KeycloakService.keycloak.loadUserProfile().success(profile => {
+          //   store.dispatch('KeyCloakModule/setUserProfile', profile);
+          // });
 
           setInterval(() => {
             KeycloakService.updateToken(10)

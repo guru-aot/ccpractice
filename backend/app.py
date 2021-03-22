@@ -123,7 +123,7 @@ def addrequest():
 
     name = requestjson['name']
     description = requestjson['description']
-    status = requestjson['status']
+    status = 'submitted'
     createdby = requestjson['createdby']    
     userid = g.oidc_token_info['sub']
     requestaddresult = requestDataAccess.AddRequest(name, description, status, createdby, userid)
