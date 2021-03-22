@@ -125,8 +125,8 @@ def addrequest():
     description = requestjson['description']
     status = requestjson['status']
     createdby = requestjson['createdby']    
-
-    requestaddresult = requestDataAccess.AddRequest(name, description, status, createdby)
+    userid = g.oidc_token_info['sub']
+    requestaddresult = requestDataAccess.AddRequest(name, description, status, createdby, userid)
     if requestaddresult.success == True:
         emailservice.send('abin.antony@aot-technologies.com','TEST FOI TEST',"REQUEST ADDED")
         return jsonClassEncoder.encode(requestaddresult), 200
@@ -137,7 +137,16 @@ def addrequest():
 @cors_preflight('GET,POST,OPTIONS')
 @oidc.accept_token(True)
 def getallrequests():
-    requests = requestDataAccess.GetRequests()
+    roles = g.oidc_token_info['realm_access']['roles']
+    userid = g.oidc_token_info['sub']
+    userrole = 'user_role'
+    approverrole = 'approver_role'
+    if userrole in roles:
+        requests = requestDataAccess.GetRequestsByUser(userid)
+    elif approverrole in roles:
+        requests = requestDataAccess.GetRequestsByRole()
+    else:
+        requests = requestDataAccess.GetRequests()
     jsondata = json.dumps(requests)
     return jsondata, 200
 

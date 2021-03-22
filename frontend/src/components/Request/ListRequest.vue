@@ -12,9 +12,9 @@
     </v-toolbar>
     <v-divider></v-divider>
     <v-spacer></v-spacer>
-    <v-card-text v-if="getRequestList && getRequestList.length == 0">No Author found. Add one</v-card-text>
-    <v-card-text v-if="getRequestList && getRequestList.length != 0">
-
+    <!-- <v-card-text v-if="getRequestList && getRequestList.length == 0">No Author found. Add one</v-card-text>
+    <v-card-text v-if="getRequestList && getRequestList.length != 0"> -->
+    <v-card-text>
       <v-toolbar
         flat
       >
