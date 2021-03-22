@@ -3,7 +3,7 @@
   /**
    * ListViewComponent Page
    */
-  
+
   <template>
   <v-card class="mx-auto">
     <v-toolbar flat>
@@ -14,7 +14,7 @@
     <v-spacer></v-spacer>
     <v-card-text v-if="getRequestList && getRequestList.length == 0">No Author found. Add one</v-card-text>
     <v-card-text v-if="getRequestList && getRequestList.length != 0">
-     
+
       <v-toolbar
         flat
       >
@@ -92,7 +92,7 @@
                     cols="12"
                     sm="6"
                     md="4"
-                  >                   
+                  >
                   </v-col>
                 </v-row>
               </v-container>
@@ -130,13 +130,13 @@
         </v-dialog>
       </v-toolbar>
       <!-- <Request /> -->
-      <v-data-table 
-      :headers="getRequestHeaders"     
+      <v-data-table
+      :headers="getRequestHeaders"
       :items="getRequestList"
-      :items-per-page="10"      
+      :items-per-page="10"
       >
        <template v-slot:item="row">
-        <tr> 
+        <tr>
         <td class="text-xs-right">{{ row.item.requestid }}</td>
         <td class="text-xs-right">{{ row.item.name }}</td>
         <td class="text-xs-right">{{ row.item.description }}</td>
@@ -150,9 +150,9 @@
                <v-icon color="pink">delete</v-icon>
             </v-btn>
          </td>
-         </tr>        
-      </template>      
-      </v-data-table>     
+         </tr>
+      </template>
+      </v-data-table>
     </v-card-text>
   </v-card>
 </template>
@@ -210,7 +210,7 @@ export default class ListRequestComponent extends Vue {
     });
     return this.dialog;
   }
-  private save() {    
+  private save() {
     if (this.editedIndex > -1) {
       this.updateRequestStore(this.editedItem);
     } else {
@@ -227,7 +227,6 @@ export default class ListRequestComponent extends Vue {
     return this.dialogDelete;
   }
   private deleteItemConfirm() {
-    console.log(this.editedItem)
     this.deleteRequestStore(this.editedItem);
     this.closeDelete();
   }
@@ -249,4 +248,3 @@ export default class ListRequestComponent extends Vue {
   }
 }
 </script>
- 

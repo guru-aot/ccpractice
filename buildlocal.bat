@@ -14,6 +14,15 @@ echo 'Complete  Building'
 
 @REM  Bring up new containers (silently)
 
+echo 'Compose up CAMUNDA BPM...'
+docker-compose up -d CAMUNDA
+
+timeout /t 10 /nobreak > NUL
+echo 'deploying WorkFlow'
+docker exec -it cccamundacontainer /bin/bash -c "/app/deploywfmodel.sh"
+
+timeout /t 5 /nobreak > NUL
+
 echo 'Compose Up  PostgreDB ... '
 docker-compose up -d postgresqldb
 

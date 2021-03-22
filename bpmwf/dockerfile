@@ -1,0 +1,7 @@
+FROM camunda/camunda-bpm-platform
+
+COPY /bpmwf/. /app
+
+
+
+
