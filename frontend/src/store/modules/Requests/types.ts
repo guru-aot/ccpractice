@@ -4,7 +4,10 @@ export interface RequestState {
   requestList: RequestModel[];
   loading?: boolean;
   successStatus?: boolean;
+  successWFStatus?: boolean;
   errorStatus?: boolean;
+  taskid: string;
+  statusUpdated?: boolean;
 }
 export interface RequestModel {
   name: string;
@@ -15,4 +18,5 @@ export interface RequestModel {
   created_at: string;
   updated_at: string;
   updated: string;
+  transactionid: string;
 }

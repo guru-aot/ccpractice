@@ -46,7 +46,7 @@ export default class Profile extends Vue {
    */
   private mounted() {
     // this.$store.dispatch('AuthorModule/loadAuthors');
-    this.$store.dispatch('ProfileModule/loadUserProfile');
+    // this.$store.dispatch('ProfileModule/loadUserProfile');
   }
 }
 </script>

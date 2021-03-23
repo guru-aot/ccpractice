@@ -36,6 +36,7 @@
               class="mb-2"
               v-bind="attrs"
               v-on="on"
+              v-show="!disabled"
             >
               New Request
             </v-btn>
@@ -56,6 +57,7 @@
                     <v-text-field
                       v-model="editedItem.name"
                       label="Request Name"
+                      :disabled="disabled"                   
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -66,6 +68,7 @@
                     <v-text-field
                       v-model="editedItem.description"
                       label="Description"
+                      :disabled="disabled"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -73,10 +76,14 @@
                     sm="6"
                     md="4"
                   >
-                    <v-text-field
-                      v-model="editedItem.status"
-                      label="Status"
-                    ></v-text-field>
+                  <v-select
+                    :items="statusArray"
+                    label="Status"
+                    v-model="editedItem.status"
+                    dense
+                    solo
+                    v-show="disabled"
+                  ></v-select>                   
                   </v-col>
                   <v-col
                     cols="12"
@@ -86,6 +93,7 @@
                     <v-text-field
                       v-model="editedItem.createdby"
                       label="Created By"
+                      :disabled="disabled"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -130,10 +138,18 @@
         </v-dialog>
       </v-toolbar>
       <!-- <Request /> -->
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
       <v-data-table
       :headers="getRequestHeaders"
       :items="getRequestList"
       :items-per-page="10"
+      :search="search"
       >
        <template v-slot:item="row">
         <tr>
@@ -159,6 +175,8 @@
   <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Getter, namespace, Action } from 'vuex-class';
+import { Guid } from 'guid-typescript';
+import axios from 'axios';
 import Request from './Request.vue';
 const RequestModule = namespace('RequestModule');
 
@@ -172,25 +190,34 @@ export default class ListRequestComponent extends Vue {
   @RequestModule.Action('addRequest') public addRequestStore!: any;
   @RequestModule.Action('updateRequest') public updateRequestStore!: any;
   @RequestModule.Action('deleteRequest') public deleteRequestStore!: any;
-  // @RequestModule.Action('updateRequest') public updateRequest!: any;
+  @RequestModule.Action('startWorkFlow') public startWorkFlowStore!: any;
+  @RequestModule.Action('loadRequestWF') public loadRequestWFStore!: any;
+  @RequestModule.Action('approveRequestWF') public approveRequestWFStore!: any;
+  @RequestModule.Getter('getTaskId') public getTaskId!: any;
   @RequestModule.Getter('getRequestList') public getRequestList!: [];
   @RequestModule.Getter('getRequestHeaders') public getRequestHeaders!: [];
 
   public form: boolean = false;
   private dialog: boolean = false;
   private dialogDelete: boolean = false;
+  private disabled: boolean = false;
+  private approverRole: boolean = false;
+  private userRole: boolean = false;
   private editedIndex: number = -1;
+  private search: string = '';
+  private statusArray: string[] = ['approved', 'rejected'];
   private defaultItem: object = {
       name: '',
       description: '',
       status: '',
       createdby: ''
   };
-  private editedItem: object = {
+  private editedItem: any = {
       name: '',
       description: '',
       status: '',
-      createdby: ''
+      createdby: '',
+      transactionid: ''
   };
   @Watch('dialog')
   public onPropertyChanged(value: boolean, oldValue: boolean) {
@@ -199,7 +226,16 @@ export default class ListRequestComponent extends Vue {
   get formTitle() {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
   }
+    private setEditable() {
+    const userRoles = sessionStorage.getItem('user-roles');
+    this.approverRole = !!userRoles ? userRoles.includes('approver_role') : false;
+    this.userRole = !!userRoles ? userRoles.includes('user_role') : false;
+    if (this.approverRole) {
+      this.disabled = true;
+    }
+  }
   private mounted() {
+    this.setEditable();
     this.loadRequest();
   }
   private close() {
@@ -213,8 +249,32 @@ export default class ListRequestComponent extends Vue {
   private save() {
     if (this.editedIndex > -1) {
       this.updateRequestStore(this.editedItem);
+      if (this.approverRole) {
+        // this.loadRequestWFStore(this.editedItem.transactionid);
+        // console.log(this.editedItem.transactionid + ':' + this.getTaskId);
+        let statusValue = '';
+        if (this.editedItem.status === 'approved') {
+          statusValue = 'approve';
+        } else {
+          statusValue = 'reject';
+        }
+        const jsonParam = {
+          json:
+          {
+            payload: { variables: { action: { value: statusValue } } },
+            transactionID: this.getTaskId
+          }
+        };
+        // console.log(JSON.stringify(jsonParam));
+        this.approveRequestWFStore(JSON.stringify(jsonParam));
+      }
     } else {
+      this.editedItem.transactionid = Guid.create().toString();
       this.addRequestStore(this.editedItem);
+      const jsonParam = {
+      variables: { transactionID: { value: this.editedItem.transactionid } }
+      };
+      this.startWorkFlowStore(JSON.stringify(jsonParam));
     }
     this.close();
   }
@@ -231,17 +291,13 @@ export default class ListRequestComponent extends Vue {
     this.closeDelete();
   }
   private editItem(item: any) {
-    // console.log(item);
-    // this.updateRequest(item);
-    // this.editedIndex = this.desserts.indexOf(item);
     this.editedIndex = item.requestid;
     this.editedItem = Object.assign({}, item);
     this.dialog = true;
+    this.loadRequestWFStore(this.editedItem.transactionid);
   }
 
   private deleteItem(item: any) {
-    // console.log(item);
-    // this.editedIndex = this.desserts.indexOf(item);
     this.editedIndex = item.requestid;
     this.editedItem = Object.assign({}, item);
     this.dialogDelete = true;

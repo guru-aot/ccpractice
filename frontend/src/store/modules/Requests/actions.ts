@@ -24,9 +24,57 @@ export const actions: ActionTree<RequestState, RootState> = {
         dispatch('loadRequest');
       })
       .catch(() => {
-        commit('SET_CONTACT_SUCCESSFULLY', false);
-        commit('SET_CONTACT_ERROR', true);
+        commit('SET_REQUEST_ERROR', true);
       });
+  },
+
+  startWorkFlow({ commit, dispatch}, data) {
+    commit('SET_LOADING', true);
+    axios.post('http://localhost:8000/engine-rest/process-definition/key/FOICCBPMNFILE1/start', data)
+    .then(_ => {
+      commit('SET_LOADING', false);
+      commit('SET_WF_SUCCESSFULLY', true);
+      commit('SET_REQUEST_ERROR', false);
+    })
+    .catch(() => {
+      commit('SET_REQUEST_ERROR', true);
+    });
+  },
+
+  /**
+   * load request from server and set to store
+   * @param {*} { commit }
+   */
+   loadRequestWF({ commit }, txnID) {
+    commit('SET_LOADING', true);
+    const path = `http://localhost:8000/engine-rest/task?processVariables=transactionID_eq_${txnID}`;
+    // console.log(path);
+    axios
+      .get(path)
+      .then((r: any) => r.data)
+      .then((data: any) => {
+        // console.log('taskID: ' + data[0].id);
+        sessionStorage.setItem('taskid', data[0].id);
+        commit('SET_TASKID_SUCCESSFULLY', data[0].id);
+        commit('SET_LOADING', false);
+      });
+  },
+
+  approveRequestWF({ commit }, data) {
+    commit('SET_LOADING', true);
+    const obj = JSON.parse(data);
+    const path = `http://localhost:8000/engine-rest/task/${obj.json.transactionID}/complete`;
+    // console.log(path);
+    // console.log(JSON.stringify(obj.json.payload));
+    axios.post(path, JSON.stringify(obj.json.payload))
+    .then(_ => {
+      commit('SET_LOADING', false);
+      commit('SET_STATUS_UPDATE', true);
+      commit('SET_REQUEST_ERROR', false);
+    })
+    .catch(() => {
+      commit('SET_REQUEST_ERROR', true);
+    });
   },
 
   updateRequest({ commit, dispatch }, data) {
@@ -42,8 +90,7 @@ export const actions: ActionTree<RequestState, RootState> = {
         dispatch('loadRequest');
       })
       .catch(() => {
-        commit('SET_CONTACT_SUCCESSFULLY', false);
-        commit('SET_CONTACT_ERROR', true);
+        commit('SET_REQUEST_ERROR', true);
       });
   },
 
@@ -60,8 +107,7 @@ export const actions: ActionTree<RequestState, RootState> = {
         dispatch('loadRequest');
       })
       .catch(() => {
-        commit('SET_CONTACT_SUCCESSFULLY', false);
-        commit('SET_CONTACT_ERROR', true);
+        commit('SET_REQUEST_ERROR', true);
       });
   },
 

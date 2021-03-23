@@ -32,6 +32,7 @@ export class KeycloakService {
    * Logouts keycloak service
    */
   public static logout() {
+    sessionStorage.clear();
     KeycloakService.keycloak.logout();
   }
 
@@ -134,9 +135,9 @@ export class KeycloakService {
             silentCheckSsoRedirectUri,
           );
 
-          KeycloakService.keycloak.loadUserProfile().success(profile => {
-            store.dispatch('KeyCloakModule/setUserProfile', profile);
-          });
+          // KeycloakService.keycloak.loadUserProfile().success(profile => {
+          //   store.dispatch('KeyCloakModule/setUserProfile', profile);
+          // });
 
           setInterval(() => {
             KeycloakService.updateToken(10)
@@ -160,7 +161,7 @@ export class KeycloakService {
         })
         .error(() => {
           /* tslint:disable */
-          console.log('keycloak init is not working. check  configuration ');
+          // console.log('keycloak init is not working. check  configuration ');
           /* tslint:enable */
           // console.info('Failed to refresh token');
         });

@@ -29,10 +29,11 @@ export const actions: ActionTree<KeyCloakState, RootState> = {
       commit('SET_KEY_AUTH', keycloak);
       commit('SET_TOKEN');
       sessionStorage.setItem('keycloak_token', token);
-      axios.post(`${BASE_URL}${ENDURL}`).then(_ => {
-        // commit('SET_BOOKS', _.data);
-        // router.push({ path: '/list-contact' });
-      });
+      sessionStorage.setItem('user-roles', KeycloakService.userRoles());
+      // axios.post(`${BASE_URL}${ENDURL}`).then(_ => {
+      //   // commit('SET_BOOKS', _.data);
+      //   // router.push({ path: '/list-contact' });
+      // });
     }
   },
 
@@ -62,11 +63,11 @@ export const actions: ActionTree<KeyCloakState, RootState> = {
     let isAdmin = false;
     let isUser = false;
     if (userRole && userRole.length > 0) {
-      const isLibrarian = userRole.indexOf('librarian');
-      if (isLibrarian > 0) {
+      const isApprover = userRole.indexOf('approver_role');
+      if (isApprover > -1) {
         isAdmin = true;
       } else {
-        const isUserRole = userRole.indexOf('user');
+        const isUserRole = userRole.indexOf('user_role');
         if (isUserRole > 0) {
           isUser = true;
         }
