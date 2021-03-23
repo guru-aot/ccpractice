@@ -98,7 +98,8 @@ class RequestResource(Resource):
         status = requestjson['status']
         createdby = requestjson['createdby']    
         userid = g.oidc_token_info['sub']
-        requestaddresult = requestDataAccess.AddRequest(name, description, status, createdby, userid)
+        transactionid = requestjson['transactionid']  
+        requestaddresult = requestDataAccess.AddRequest(name, description, status, createdby, userid, transactionid)
         if requestaddresult.success == True:
             emailservice.send('abin.antony@aot-technologies.com','TEST FOI TEST',"REQUEST ADDED")
             return jsonClassEncoder.encode(requestaddresult), 200

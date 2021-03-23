@@ -2,6 +2,6 @@ FROM camunda/camunda-bpm-platform
 
 COPY /bpmwf/. /app
 
-
+COPY /bpmwf/web.xml /camunda/webapps/engine-rest/WEB-INF/ 
 
 
