@@ -37,6 +37,7 @@ def init_app(run_mode=os.getenv('FLASK_ENV', 'production')):
 
    
     ExceptionHandler(app)
+    
     db.init_app(app) 
 
     @app.route('/', methods=['GET'])
