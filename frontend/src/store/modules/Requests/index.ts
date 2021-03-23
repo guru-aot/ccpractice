@@ -19,10 +19,12 @@ export const state: RequestState = {
     created_at: '',
     updated_at: '',
     updated: '',
+    transactionid: '',
   },
   requestList: [],
   loading: false,
   successStatus: false,
+  successWFStatus: false,
   errorStatus: false,
 };
 

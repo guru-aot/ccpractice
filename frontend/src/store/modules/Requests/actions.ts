@@ -24,9 +24,21 @@ export const actions: ActionTree<RequestState, RootState> = {
         dispatch('loadRequest');
       })
       .catch(() => {
-        commit('SET_CONTACT_SUCCESSFULLY', false);
-        commit('SET_CONTACT_ERROR', true);
+        commit('SET_REQUEST_ERROR', true);
       });
+  },
+
+  startWorkFlow({ commit, dispatch}, data) {
+    commit('SET_LOADING', true);
+    axios.post('http://localhost:8000/engine-rest/process-definition/key/FOICCBPMNFILE1/start', data)
+    .then(_ => {
+      commit('SET_LOADING', false);
+      commit('SET_WF_SUCCESSFULLY', true);
+      commit('SET_REQUEST_ERROR', false);
+    })
+    .catch(() => {
+      commit('SET_REQUEST_ERROR', true);
+    });
   },
 
   updateRequest({ commit, dispatch }, data) {
@@ -42,8 +54,7 @@ export const actions: ActionTree<RequestState, RootState> = {
         dispatch('loadRequest');
       })
       .catch(() => {
-        commit('SET_CONTACT_SUCCESSFULLY', false);
-        commit('SET_CONTACT_ERROR', true);
+        commit('SET_REQUEST_ERROR', true);
       });
   },
 
@@ -60,8 +71,7 @@ export const actions: ActionTree<RequestState, RootState> = {
         dispatch('loadRequest');
       })
       .catch(() => {
-        commit('SET_CONTACT_SUCCESSFULLY', false);
-        commit('SET_CONTACT_ERROR', true);
+        commit('SET_REQUEST_ERROR', true);
       });
   },
 

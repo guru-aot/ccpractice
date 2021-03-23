@@ -55,6 +55,15 @@ export const mutations: MutationTree<RequestState> = {
   },
 
   /**
+   * set stae on success
+   * @param {*} state
+   * @param {*} payload
+   */
+  SET_WF_SUCCESSFULLY(state, payload: any) {
+    state.successWFStatus = payload;
+  },
+
+  /**
    * set stae on error
    * @param {*} state
    * @param {*} payload

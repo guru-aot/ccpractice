@@ -22,9 +22,11 @@ class Request(db.Model):
     updated_at = db.Column(db.TIMESTAMP, default=datetime.datetime.now().isoformat())
     updated = db.Column(db.Boolean, default=False) 
     userid = db.Column(UUID(as_uuid=True), unique=False, nullable=False)
+    transactionid = db.Column(UUID(as_uuid=True), unique=False, nullable=False)
+
     def get_id(self):
         return text_type(self.requestid)
 
 class RequestSchema(ma.Schema):
     class Meta:
-        fields = ('requestid', 'name', 'description', 'status', 'createdby', 'created_at', 'updated_at', 'updated')
+        fields = ('requestid', 'name', 'description', 'status', 'createdby', 'created_at', 'updated_at', 'updated','userid','transactionid')

@@ -175,6 +175,8 @@
   <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Getter, namespace, Action } from 'vuex-class';
+import { Guid } from 'guid-typescript';
+import axios from 'axios';
 import Request from './Request.vue';
 const RequestModule = namespace('RequestModule');
 
@@ -188,7 +190,7 @@ export default class ListRequestComponent extends Vue {
   @RequestModule.Action('addRequest') public addRequestStore!: any;
   @RequestModule.Action('updateRequest') public updateRequestStore!: any;
   @RequestModule.Action('deleteRequest') public deleteRequestStore!: any;
-  // @RequestModule.Action('updateRequest') public updateRequest!: any;
+  @RequestModule.Action('startWorkFlow') public startWorkFlowStore!: any;
   @RequestModule.Getter('getRequestList') public getRequestList!: [];
   @RequestModule.Getter('getRequestHeaders') public getRequestHeaders!: [];
 
@@ -196,6 +198,8 @@ export default class ListRequestComponent extends Vue {
   private dialog: boolean = false;
   private dialogDelete: boolean = false;
   private disabled: boolean = false;
+  private approverRole: boolean = false;
+  private userRole: boolean = false;
   private editedIndex: number = -1;
   private search: string = '';
   private statusArray: string[] = ['approved', 'rejected'];
@@ -205,11 +209,12 @@ export default class ListRequestComponent extends Vue {
       status: '',
       createdby: ''
   };
-  private editedItem: object = {
+  private editedItem: any = {
       name: '',
       description: '',
       status: '',
-      createdby: ''
+      createdby: '',
+      transactionid: ''
   };
   @Watch('dialog')
   public onPropertyChanged(value: boolean, oldValue: boolean) {
@@ -220,9 +225,9 @@ export default class ListRequestComponent extends Vue {
   }
     private setEditable() {
     const userRoles = sessionStorage.getItem('user-roles');
-    const approverRole = !!userRoles ? userRoles.includes('approver_role') : false;
-    const userRole = !!userRoles ? userRoles.includes('user_role') : false;
-    if (approverRole) {
+    this.approverRole = !!userRoles ? userRoles.includes('approver_role') : false;
+    this.userRole = !!userRoles ? userRoles.includes('user_role') : false;
+    if (this.approverRole) {
       this.disabled = true;
     }
   }
@@ -242,7 +247,12 @@ export default class ListRequestComponent extends Vue {
     if (this.editedIndex > -1) {
       this.updateRequestStore(this.editedItem);
     } else {
+      this.editedItem.transactionid = Guid.create().toString();
       this.addRequestStore(this.editedItem);
+      const jsonParam = {
+      variables: { transactionID: { value: this.editedItem.transactionid } }
+      };
+      this.startWorkFlowStore(JSON.stringify(jsonParam));
     }
     this.close();
   }
@@ -259,17 +269,12 @@ export default class ListRequestComponent extends Vue {
     this.closeDelete();
   }
   private editItem(item: any) {
-    // console.log(item);
-    // this.updateRequest(item);
-    // this.editedIndex = this.desserts.indexOf(item);
     this.editedIndex = item.requestid;
     this.editedItem = Object.assign({}, item);
     this.dialog = true;
   }
 
   private deleteItem(item: any) {
-    // console.log(item);
-    // this.editedIndex = this.desserts.indexOf(item);
     this.editedIndex = item.requestid;
     this.editedItem = Object.assign({}, item);
     this.dialogDelete = true;

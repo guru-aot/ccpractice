@@ -8,10 +8,10 @@ from sqlalchemy import and_, or_, update
 
 class RequestDataAccess():
     dbSession = SessionManager().session    
-    def AddRequest(self, name, description, status, createdby, userid) -> DefaultMethodResult:
+    def AddRequest(self, name, description, status, createdby, userid, transactionid) -> DefaultMethodResult:
         createdat = datetime.now().isoformat()
         updatedat = createdat         
-        newrequest = Request(name = name, description = description, status = status.lower(), createdby = createdby, created_at = createdat, updated_at = updatedat, updated = False, userid = userid)
+        newrequest = Request(name = name, description = description, status = status.lower(), createdby = createdby, created_at = createdat, updated_at = updatedat, updated = False, userid = userid, transactionid = transactionid)
         self.dbSession.add(newrequest)
         self.dbSession.commit()
         return DefaultMethodResult(True,'Request added')

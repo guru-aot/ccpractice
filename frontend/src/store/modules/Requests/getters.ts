@@ -20,6 +20,9 @@ export const getters: GetterTree<RequestState, RootState> = {
   successStatus(state) {
     return state.successStatus;
   },
+  successWFStatus(state) {
+    return state.successWFStatus;
+  },
   errorStatus(state) {
     return state.errorStatus;
   },
