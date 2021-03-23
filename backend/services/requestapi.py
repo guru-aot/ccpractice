@@ -95,7 +95,7 @@ class RequestResource(Resource):
 
         name = requestjson['name']
         description = requestjson['description']
-        status = requestjson['status']
+        status = "submitted"
         createdby = requestjson['createdby']    
         userid = g.oidc_token_info['sub']
         transactionid = requestjson['transactionid']  
