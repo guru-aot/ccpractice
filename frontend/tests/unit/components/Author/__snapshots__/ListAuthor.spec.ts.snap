@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`component/Author/ListAuthor.vue renders props when passed 1`] = `
+<v-card-stub
+  class="mx-auto"
+  loaderheight="4"
+  tag="div"
+>
+  <v-toolbar-stub
+    extensionheight="48"
+    flat="true"
+    src=""
+    tag="header"
+    tile="true"
+  >
+    <v-toolbar-title-stub
+      class="grey--text"
+    >
+      All Author
+    </v-toolbar-title-stub>
+     
+    <div
+      class="flex-grow-1"
+    />
+  </v-toolbar-stub>
+   
+  <v-divider-stub />
+   
+  <!---->
+   
+  <v-card-text-stub>
+    <v-simple-table-stub
+      fixedheader="true"
+    />
+  </v-card-text-stub>
+</v-card-stub>
+`;

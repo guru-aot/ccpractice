@@ -1,0 +1,133 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`component/Author/AddAuthor.vue renders props when passed 1`] = `
+<v-card-stub
+  class="mx-auto"
+  loaderheight="4"
+  style="max-width: 500px;"
+  tag="div"
+>
+  <!---->
+   
+  <!---->
+   
+  <v-toolbar-stub
+    cards=""
+    color="deep-purple accent-4"
+    dark="true"
+    extensionheight="48"
+    flat="true"
+    src=""
+    tag="header"
+    tile="true"
+  >
+    <v-card-title-stub
+      class="title font-weight-regular"
+    >
+      Add Author
+    </v-card-title-stub>
+     
+    <v-spacer-stub />
+  </v-toolbar-stub>
+   
+  <v-form-stub
+    class="pa-4 pt-6"
+  >
+    <v-text-field-stub
+      backgroundcolor=""
+      clearicon="$clear"
+      color="deep-purple"
+      counter="10"
+      errorcount="1"
+      errormessages=""
+      filled="true"
+      label="First name"
+      loaderheight="2"
+      messages=""
+      rules="v => {
+          /* istanbul ignore next */cov_15j8hk4u63.f[4]++;
+          cov_15j8hk4u63.s[17]++;
+          return (/* istanbul ignore next */(cov_15j8hk4u63.b[2][0]++, !!v) || /* istanbul ignore next */(cov_15j8hk4u63.b[2][1]++, 'This field is required')
+          );
+        }"
+      style="min-height: 96px;"
+      successmessages=""
+      type="text"
+      value=""
+    />
+     
+    <v-text-field-stub
+      backgroundcolor=""
+      clearicon="$clear"
+      color="deep-purple"
+      counter="10"
+      errorcount="1"
+      errormessages=""
+      filled="true"
+      label="Last name"
+      loaderheight="2"
+      messages=""
+      rules="v => {
+          /* istanbul ignore next */cov_15j8hk4u63.f[4]++;
+          cov_15j8hk4u63.s[17]++;
+          return (/* istanbul ignore next */(cov_15j8hk4u63.b[2][0]++, !!v) || /* istanbul ignore next */(cov_15j8hk4u63.b[2][1]++, 'This field is required')
+          );
+        }"
+      style="min-height: 96px;"
+      successmessages=""
+      type="text"
+      value=""
+    />
+     
+    <v-text-field-stub
+      backgroundcolor=""
+      clearicon="$clear"
+      color="deep-purple"
+      counter="10"
+      errorcount="1"
+      errormessages=""
+      filled="true"
+      label="Middle name"
+      loaderheight="2"
+      messages=""
+      rules="v => {
+          /* istanbul ignore next */cov_15j8hk4u63.f[4]++;
+          cov_15j8hk4u63.s[17]++;
+          return (/* istanbul ignore next */(cov_15j8hk4u63.b[2][0]++, !!v) || /* istanbul ignore next */(cov_15j8hk4u63.b[2][1]++, 'This field is required')
+          );
+        }"
+      style="min-height: 96px;"
+      successmessages=""
+      type="text"
+      value=""
+    />
+  </v-form-stub>
+   
+  <v-divider-stub />
+   
+  <v-card-actions-stub>
+    <v-btn-stub
+      activeclass=""
+      tag="button"
+      text="true"
+      type="button"
+    >
+      Clear
+    </v-btn-stub>
+     
+    <v-spacer-stub />
+     
+    <v-btn-stub
+      activeclass=""
+      class="white--text"
+      color="deep-purple accent-4"
+      depressed="true"
+      disabled="true"
+      tag="button"
+      type="button"
+    >
+      Submit
+    </v-btn-stub>
+  </v-card-actions-stub>
+</v-card-stub>
+`;

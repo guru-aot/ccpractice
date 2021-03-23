@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Author.vue renders without crashing 1`] = `
+<div>
+  <div>
+    <addauthor-stub />
+  </div>
+   
+  <div
+    class="mt-6"
+  >
+    <listauthor-stub />
+  </div>
+</div>
+`;

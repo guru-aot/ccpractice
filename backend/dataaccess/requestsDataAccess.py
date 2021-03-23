@@ -8,18 +8,20 @@ from sqlalchemy import and_, or_, update
 
 class RequestDataAccess():
     dbSession = SessionManager().session    
-    def AddRequest(self, name, description, status, createdby, updated) -> DefaultMethodResult:      
+    def AddRequest(self, name, description, status, createdby, userid, transactionid) -> DefaultMethodResult:
         createdat = datetime.now().isoformat()
         updatedat = createdat         
-        newrequest = Request(name = name, description = description, status = status, createdby = createdby, created_at = createdat, updated_at = updatedat, updated = updated)
+        newrequest = Request(name = name, description = description, status = status.lower(), createdby = createdby, created_at = createdat, updated_at = updatedat, updated = False, userid = userid, transactionid = transactionid)
         self.dbSession.add(newrequest)
         self.dbSession.commit()
         return DefaultMethodResult(True,'Request added')
+
     def DeleteRequest(self, requestid) -> DefaultMethodResult:
         request = self.dbSession.query(Request).filter_by(requestid=requestid).first()         
         self.dbSession.delete(request)
         self.dbSession.commit()
         return DefaultMethodResult(True,'Request deleted')
+
     def EditRequest(self, requestid, name, description, status, createdby, updated) -> DefaultMethodResult:
         isupdated = updated
         # if updated.upper() == 'FALSE':
@@ -30,6 +32,19 @@ class RequestDataAccess():
         self.dbSession.query(Request).filter_by(requestid=requestid).update({Request.name:name, Request.description:description, Request.status:status, Request.createdby:createdby, Request.updated_at:updatedat, Request.updated:isupdated}, synchronize_session = False)
         self.dbSession.commit()
         return DefaultMethodResult(True,'Request updated')
+
+    def GetRequestsByRole(self):
+    #    request_schema = RequestSchema()
+       request_schema = RequestSchema(many=True)
+       requests = self.dbSession.query(Request).filter_by(status='submitted').order_by(Request.requestid).all()
+       return request_schema.dump(requests)
+
+    def GetRequestsByUser(self, userid):
+    #    request_schema = RequestSchema()
+       request_schema = RequestSchema(many=True)
+       requests = self.dbSession.query(Request).filter_by(userid=userid).order_by(Request.requestid).all()
+       return request_schema.dump(requests)
+
     def GetRequests(self):
     #    request_schema = RequestSchema()
        request_schema = RequestSchema(many=True)

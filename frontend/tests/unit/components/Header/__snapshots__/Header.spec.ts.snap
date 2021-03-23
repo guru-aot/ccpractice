@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header.vue renders props when passed 1`] = `
+<v-app-bar-stub
+  app="true"
+  extensionheight="48"
+  src=""
+  tag="header"
+  tile="true"
+  value="true"
+>
+  <v-toolbar-title-stub
+    class="headline text-uppercase"
+  >
+    <span>
+      Home
+    </span>
+  </v-toolbar-title-stub>
+   
+  <v-spacer-stub />
+   
+  <!---->
+   
+  <v-btn-stub
+    activeclass=""
+    link="true"
+    tag="button"
+    text="true"
+    to="/"
+    type="button"
+  >
+    <span
+      class="mr-2"
+    >
+      Home
+    </span>
+  </v-btn-stub>
+   
+  <v-btn-stub
+    activeclass=""
+    link="true"
+    tag="button"
+    text="true"
+    to="/login"
+    type="button"
+  >
+    <span
+      class="mr-2"
+    >
+      Login
+    </span>
+  </v-btn-stub>
+   
+  <!---->
+</v-app-bar-stub>
+`;

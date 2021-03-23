@@ -1,23 +1,70 @@
 version: '3'
-services:  
+services:
+  CAMUNDA:    
+    image: camundabpm-docker
+    container_name: cccamundacontainer     
+    build:
+      context: ./      
+      dockerfile: bpmwf/dockerfile
+    ports:
+      - "8000:8080"    
+    networks:
+      services-network:
+        aliases:
+          - camundabpmnw
   BACKEND:
     build:
       context: ./      
       dockerfile: backend/dockerfile
     image: ccbackendimage
+    container_name: cccfoibecontainer 
+    depends_on: 
+      - postgresqldb     
+    networks:
+      services-network:
+        aliases:
+          - backendnw
     ports:
       - 5000:5000
     environment:
-      - DATABASE_URL=postgresql://postgres:password@foicccb.cwpb3horhlgp.us-east-2.rds.amazonaws.com:5432/postgres
+      - DATABASE_URL=postgresql://docker:docker@postgresqldb:5432/docker
       - FLASK_ENV:DEV
   FRONTEND:
     build:
       context: ./      
       dockerfile: frontend/Dockerfile
-    image: ccfrontendimage
+      args:
+        - API_BASE_URL=http://localhost:5000/
+        - KEYCLOAK_URL=https://iam.aot-technologies.com/auth/
+        - KEYCLOAK_REALM=foirealm
+        - KEYCLOAK_CLIENT=foiclientfe
+        - KEYCLOAK_CLIENT_SECRET=fdf3be98-6dfa-4a5a-a0fe-ef644ffbe106
+        - CAMUNDAENGINEBASEURL=http://localhost:8000/engine-rest
+        - CAMUNDABPMNFILE=FOICCBPMNFILE1
+    image: ccfrontendimage    
     ports:
       - 8080:8080
     depends_on:
-      - BACKEND           
+      - BACKEND
+    networks:
+      services-network:
+        aliases:
+          - frontendnw
+  postgresqldb:
+    image: postgres
+    container_name: pg-docker
+    ports:
+      - "5400:5432"
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+    networks:
+      services-network:
+        aliases:
+          - db   
 volumes:
   dbdata:
+networks:
+  services-network:
+    name: services-network
+    driver: bridge
