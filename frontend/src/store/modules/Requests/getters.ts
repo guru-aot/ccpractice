@@ -32,4 +32,10 @@ export const getters: GetterTree<RequestState, RootState> = {
   getStatusUpdated(state) {
     return state.statusUpdated;
   },
+  getProcessDefinitionId(state) {
+    return state.processdefinitionid;
+  },
+  getWFXML(state) {
+    return state.wfXML;
+  }
 };

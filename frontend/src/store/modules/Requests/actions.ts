@@ -45,7 +45,7 @@ export const actions: ActionTree<RequestState, RootState> = {
    * load request from server and set to store
    * @param {*} { commit }
    */
-   loadRequestWF({ commit }, txnID) {
+  loadRequestWF({ commit }, txnID) {
     commit('SET_LOADING', true);
     const path = `http://localhost:8000/engine-rest/task?processVariables=transactionID_eq_${txnID}`;
     // console.log(path);
@@ -56,6 +56,40 @@ export const actions: ActionTree<RequestState, RootState> = {
         // console.log('taskID: ' + data[0].id);
         sessionStorage.setItem('taskid', data[0].id);
         commit('SET_TASKID_SUCCESSFULLY', data[0].id);
+        commit('SET_LOADING', false);
+      });
+  },
+
+  /**
+   * load request from server and set to store
+   * @param {*} { commit }
+   */
+  getWFProcessDefinitionId({ commit }) {
+    commit('SET_LOADING', true);
+    const path = 'http://localhost:8000/engine-rest/process-definition/key/FOICCBPMNFILE1';
+    axios
+      .get(path)
+      .then((r: any) => r.data)
+      .then((data: any) => {
+        commit('SET_PROCESSDEFINITIONID', data.id);
+        commit('SET_LOADING', false);
+      });
+  },
+
+  /**
+   * load request from server and set to store
+   * @param {*} { commit }
+   */
+  getWFXML({ commit }, id) {
+    commit('SET_LOADING', true);
+    const path = `http://localhost:8000/engine-rest/process-definition/${id}/xml`;
+    // console.log(path);
+    axios
+      .get(path)
+      .then((r: any) => r.data)
+      .then((data: any) => {
+        // console.log('XML: ' + data.bpmn20Xml);
+        commit('SET_WFXML', data.bpmn20Xml);
         commit('SET_LOADING', false);
       });
   },

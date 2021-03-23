@@ -8,6 +8,8 @@ export interface RequestState {
   errorStatus?: boolean;
   taskid: string;
   statusUpdated?: boolean;
+  processdefinitionid: string;
+  wfXML: any;
 }
 export interface RequestModel {
   name: string;

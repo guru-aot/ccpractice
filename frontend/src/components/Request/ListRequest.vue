@@ -17,13 +17,8 @@
     <v-card-text>
       <v-toolbar
         flat
-      >
-        <v-toolbar-title>My CRUD</v-toolbar-title>
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
+      >        
+        
         <v-spacer></v-spacer>
         <v-dialog
           v-model="dialog"
@@ -194,6 +189,7 @@ export default class ListRequestComponent extends Vue {
   @RequestModule.Action('loadRequestWF') public loadRequestWFStore!: any;
   @RequestModule.Action('approveRequestWF') public approveRequestWFStore!: any;
   @RequestModule.Getter('getTaskId') public getTaskId!: any;
+  @RequestModule.Getter('getWFXML') public getWFXML!: any;
   @RequestModule.Getter('getRequestList') public getRequestList!: [];
   @RequestModule.Getter('getRequestHeaders') public getRequestHeaders!: [];
 
@@ -226,7 +222,7 @@ export default class ListRequestComponent extends Vue {
   get formTitle() {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
   }
-    private setEditable() {
+  private setEditable() {
     const userRoles = sessionStorage.getItem('user-roles');
     this.approverRole = !!userRoles ? userRoles.includes('approver_role') : false;
     this.userRole = !!userRoles ? userRoles.includes('user_role') : false;
@@ -250,9 +246,8 @@ export default class ListRequestComponent extends Vue {
     if (this.editedIndex > -1) {
       this.updateRequestStore(this.editedItem);
       if (this.approverRole) {
-        // this.loadRequestWFStore(this.editedItem.transactionid);
-        // console.log(this.editedItem.transactionid + ':' + this.getTaskId);
         let statusValue = '';
+        console.log(this.getWFXML);
         if (this.editedItem.status === 'approved') {
           statusValue = 'approve';
         } else {
@@ -265,7 +260,6 @@ export default class ListRequestComponent extends Vue {
             transactionID: this.getTaskId
           }
         };
-        // console.log(JSON.stringify(jsonParam));
         this.approveRequestWFStore(JSON.stringify(jsonParam));
       }
     } else {

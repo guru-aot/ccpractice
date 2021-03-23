@@ -28,6 +28,8 @@ export const state: RequestState = {
   errorStatus: false,
   taskid: '',
   statusUpdated: false,
+  processdefinitionid: '',
+  wfXML: '',
 };
 
 const namespaced: boolean = true;

@@ -8,6 +8,7 @@
       <!-- <AddRequest v-show="this.showAddRequest" /> -->
       <!-- <AddRequest /> -->
       <!-- <Request /> -->
+      <ShowWF />
     </div>
     <div class="mt-6">
       <ListRequest />
@@ -20,11 +21,13 @@ import { Component, Vue } from 'vue-property-decorator';
 import AddRequest from '@/components/Request/AddRequest.vue'; // @ is an alias to /src
 // import Request from '@/components/Request/Request.vue';
 import ListRequest from '@/components/Request/ListRequest.vue';
+import ShowWF from '@/components/Request/ShowWF.vue';
 @Component({
   components: {
     AddRequest,
     // Request,
-    ListRequest
+    ListRequest,
+    ShowWF,
   }
 })
 export default class Request extends Vue {

@@ -86,5 +86,13 @@ export const mutations: MutationTree<RequestState> = {
    */
   SET_STATUS_UPDATE(state, payload: any) {
       state.statusUpdated = payload;
-    },
+  },
+
+  SET_PROCESSDEFINITIONID(state, payload: any) {
+    state.processdefinitionid = payload;
+  },
+
+  SET_WFXML(state, payload: any) {
+    state.wfXML = payload;
+  }
 };
