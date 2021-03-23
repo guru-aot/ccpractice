@@ -26,6 +26,8 @@ export const state: RequestState = {
   successStatus: false,
   successWFStatus: false,
   errorStatus: false,
+  taskid: '',
+  statusUpdated: false,
 };
 
 const namespaced: boolean = true;

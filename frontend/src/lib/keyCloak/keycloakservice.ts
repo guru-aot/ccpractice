@@ -161,7 +161,7 @@ export class KeycloakService {
         })
         .error(() => {
           /* tslint:disable */
-          console.log('keycloak init is not working. check  configuration ');
+          // console.log('keycloak init is not working. check  configuration ');
           /* tslint:enable */
           // console.info('Failed to refresh token');
         });

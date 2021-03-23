@@ -64,11 +64,27 @@ export const mutations: MutationTree<RequestState> = {
   },
 
   /**
+   * set stae on success
+   * @param {*} state
+   * @param {*} payload
+   */
+  SET_TASKID_SUCCESSFULLY(state, payload: any) {
+      state.taskid = payload;
+  },
+  /**
    * set stae on error
    * @param {*} state
    * @param {*} payload
    */
-   SET_REQUEST_ERROR(state, payload: any) {
+  SET_REQUEST_ERROR(state, payload: any) {
     state.errorStatus = payload;
   },
+  /**
+   * set stae on error
+   * @param {*} state
+   * @param {*} payload
+   */
+  SET_STATUS_UPDATE(state, payload: any) {
+      state.statusUpdated = payload;
+    },
 };

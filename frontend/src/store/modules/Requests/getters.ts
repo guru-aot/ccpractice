@@ -26,4 +26,10 @@ export const getters: GetterTree<RequestState, RootState> = {
   errorStatus(state) {
     return state.errorStatus;
   },
+  getTaskId(state) {
+    return state.taskid;
+  },
+  getStatusUpdated(state) {
+    return state.statusUpdated;
+  },
 };

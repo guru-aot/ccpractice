@@ -191,6 +191,9 @@ export default class ListRequestComponent extends Vue {
   @RequestModule.Action('updateRequest') public updateRequestStore!: any;
   @RequestModule.Action('deleteRequest') public deleteRequestStore!: any;
   @RequestModule.Action('startWorkFlow') public startWorkFlowStore!: any;
+  @RequestModule.Action('loadRequestWF') public loadRequestWFStore!: any;
+  @RequestModule.Action('approveRequestWF') public approveRequestWFStore!: any;
+  @RequestModule.Getter('getTaskId') public getTaskId!: any;
   @RequestModule.Getter('getRequestList') public getRequestList!: [];
   @RequestModule.Getter('getRequestHeaders') public getRequestHeaders!: [];
 
@@ -246,6 +249,25 @@ export default class ListRequestComponent extends Vue {
   private save() {
     if (this.editedIndex > -1) {
       this.updateRequestStore(this.editedItem);
+      if (this.approverRole) {
+        // this.loadRequestWFStore(this.editedItem.transactionid);
+        // console.log(this.editedItem.transactionid + ':' + this.getTaskId);
+        let statusValue = '';
+        if (this.editedItem.status === 'approved') {
+          statusValue = 'approve';
+        } else {
+          statusValue = 'reject';
+        }
+        const jsonParam = {
+          json:
+          {
+            payload: { variables: { action: { value: statusValue } } },
+            transactionID: this.getTaskId
+          }
+        };
+        // console.log(JSON.stringify(jsonParam));
+        this.approveRequestWFStore(JSON.stringify(jsonParam));
+      }
     } else {
       this.editedItem.transactionid = Guid.create().toString();
       this.addRequestStore(this.editedItem);
@@ -272,6 +294,7 @@ export default class ListRequestComponent extends Vue {
     this.editedIndex = item.requestid;
     this.editedItem = Object.assign({}, item);
     this.dialog = true;
+    this.loadRequestWFStore(this.editedItem.transactionid);
   }
 
   private deleteItem(item: any) {

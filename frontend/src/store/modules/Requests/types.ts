@@ -6,6 +6,8 @@ export interface RequestState {
   successStatus?: boolean;
   successWFStatus?: boolean;
   errorStatus?: boolean;
+  taskid: string;
+  statusUpdated?: boolean;
 }
 export interface RequestModel {
   name: string;
