@@ -39,6 +39,8 @@ services:
         - KEYCLOAK_REALM=foirealm
         - KEYCLOAK_CLIENT=foiclientfe
         - KEYCLOAK_CLIENT_SECRET=fdf3be98-6dfa-4a5a-a0fe-ef644ffbe106
+        - CAMUNDAENGINEBASEURL=http://localhost:8000/engine-rest
+        - CAMUNDABPMNFILE=FOICCBPMNFILE1
     image: ccfrontendimage    
     ports:
       - 8080:8080
