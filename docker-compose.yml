@@ -17,6 +17,7 @@ services:
       context: ./      
       dockerfile: backend/dockerfile
     image: ccbackendimage
+    container_name: cccfoibecontainer 
     depends_on: 
       - postgresqldb     
     networks:
@@ -58,19 +59,7 @@ services:
     networks:
       services-network:
         aliases:
-          - db
-  setupdb:
-    build:
-      context: ./      
-      dockerfile: backend/dockerfile
-    image: ccsetupdb
-    command: python /app/databaseCreation.py
-    depends_on:
-      - postgresqldb
-    networks:
-      services-network:
-        aliases:
-          - setupdb  
+          - db   
 volumes:
   dbdata:
 networks:

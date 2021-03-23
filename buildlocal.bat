@@ -29,12 +29,16 @@ docker-compose up -d postgresqldb
 timeout /t 10 /nobreak > NUL
 
 echo 'Migrating DB to  PostgreDB ... '
-docker-compose up -d setupdb
+@REM docker-compose up -d setupdb
 
 timeout /t 10 /nobreak > NUL
 
 echo 'Compose up BACKEND python flask ... '
 docker-compose up -d BACKEND
+
+timeout /t 10 /nobreak > NUL
+
+docker exec -it cccfoibecontainer python /app/databaseCreation.py
 
 timeout /t 10 /nobreak > NUL
 
