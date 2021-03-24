@@ -28,8 +28,20 @@ describe('component/Request/RequestList.vue', () => {
             ]),
             successStatus: jest.fn(),
             errorStatus: jest.fn(),
-          },
-          actions: {},
+            getRequestHeaders: jest.fn(() => [
+              {
+                text: 'ID',
+                align: 'start',
+                sortable: false,
+                value: 'requestid',
+              },
+              { text: 'Name', value: 'name' },
+              { text: 'Description', value: 'description' },
+              { text: 'Status', value: 'status' },
+              { text: 'Created By', value: 'createdby' },
+            ])
+         },
+         actions: { loadRequest: jest.fn() },
         },
       },
     });

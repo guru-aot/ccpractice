@@ -53,8 +53,8 @@ const KeyCloakModule = namespace('KeyCloakModule');
 export default class Header extends Vue {
   @KeyCloakModule.Getter('userProfile') private userProfile!: [];
   @KeyCloakModule.Getter('isLoggedin') private isLoggedin!: boolean;
-  @KeyCloakModule.Getter('isUser') private isUser!: boolean;
-  @KeyCloakModule.Getter('isAdmin') private isAdmin!: boolean;
+  // @KeyCloakModule.Getter('isUser') private isUser!: boolean;
+  // @KeyCloakModule.Getter('isAdmin') private isAdmin!: boolean;
 
   /**
    * make user logout

@@ -2,10 +2,10 @@
  * Request test
  */
  import { shallowMount, createLocalVue } from '@vue/test-utils';
- import ManageRequest from '@/components/Request/ManageRequest.vue';
+ import ShowWF from '@/components/Request/ShowWF.vue';
  import Vuex from 'vuex';
  import vuetify from 'vuetify';
- describe('component/Request/ManageRequest.vue', () => {
+ describe('component/Request/ShowWF.vue', () => {
    let wrapper: any;
    beforeEach(() => {
      const localVue = createLocalVue();
@@ -16,12 +16,12 @@
         RequestModule: {
            namespaced: true,
            state: {},
-           getters: { successStatus: jest.fn(), errorStatus: jest.fn(), getTaskId: jest.fn()},
-           actions: {},
+           getters: { getProcessDefinitionId: jest.fn() },
+           actions: { getWFProcessDefinitionId: jest.fn() },
          },
        },
      });
-     wrapper = shallowMount(ManageRequest, {
+     wrapper = shallowMount(ShowWF, {
        localVue,
        store,
      });
