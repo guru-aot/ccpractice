@@ -7,9 +7,9 @@ import { RootState } from '../../types';
  */
 export const getters: GetterTree<RequestState, RootState> = {
   /**
-   * author
+   * request
    * @param {*} state
-   * @returns  {object} author
+   * @returns  {object} request
    */
   getRequestHeaders(state) {
     return state.requestHeaders;

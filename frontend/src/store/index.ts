@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuex, { StoreOptions } from 'vuex';
 import { RootState } from './types';
-import AuthorModule from './modules/Author';
 import KeyCloakModule from './modules/KeyCloak/';
 import ProfileModule from './modules/Profile';
 import RequestModule from './modules/Requests';
@@ -13,7 +12,6 @@ Vue.use(Vuex);
  */
 const store: StoreOptions<RootState> = {
   modules: {
-    AuthorModule,
     KeyCloakModule,
     ProfileModule,
     RequestModule,

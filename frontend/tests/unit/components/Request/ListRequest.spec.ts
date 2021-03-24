@@ -54,5 +54,3 @@
      expect(wrapper.element).toMatchSnapshot();
    });
  });
- 
- 

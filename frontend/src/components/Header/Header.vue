@@ -8,8 +8,8 @@
       <span>Home</span>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn text to="/author" link v-if="isAdmin">
-      <span class="mr-2">Author</span>
+    <v-btn text to="/requests" link v-if="isAdmin">
+      <span class="mr-2">Requests</span>
     </v-btn>
     <v-btn text to="/" link>
       <span class="mr-2">Home</span>
@@ -53,8 +53,8 @@ const KeyCloakModule = namespace('KeyCloakModule');
 export default class Header extends Vue {
   @KeyCloakModule.Getter('userProfile') private userProfile!: [];
   @KeyCloakModule.Getter('isLoggedin') private isLoggedin!: boolean;
-  // @KeyCloakModule.Getter('isUser') private isUser!: boolean;
-  // @KeyCloakModule.Getter('isAdmin') private isAdmin!: boolean;
+  @KeyCloakModule.Getter('isUser') private isUser!: boolean;
+  @KeyCloakModule.Getter('isAdmin') private isAdmin!: boolean;
 
   /**
    * make user logout

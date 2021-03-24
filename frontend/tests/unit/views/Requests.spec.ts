@@ -26,7 +26,6 @@ describe('Requests.vue', () => {
     });
   });
   it('renders without crashing', () => {
-    // const wrapper = shallowMount(Author);
     expect(wrapper.element).toMatchSnapshot();
   });
 });

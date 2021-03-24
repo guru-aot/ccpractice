@@ -16,12 +16,6 @@ const router = new Router({
       component: Home,
     },
     {
-      path: '/author',
-      name: 'author',
-      component: () =>
-        import(/* webpackChunkName: "Author" */ './views/Author.vue'),
-    },
-    {
       path: '/profile',
       name: 'profile',
       component: () =>
