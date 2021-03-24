@@ -1,7 +1,7 @@
 from flask import Flask, g, jsonify, request, json, send_file
 from flask_restplus import Namespace, Resource, cors
-from services.config import app , oidc
-from dataaccess.requestsDataAccess import RequestDataAccess
+from resources.config import app
+from models import Request
 from utils.jsonClassEncoder import JsonClassEncoder
 from utils.email import Email
 from utils.util import cors_preflight
@@ -9,13 +9,13 @@ from datetime import datetime, timedelta
 from flask import Blueprint
 import os
 import glob
+from utils.auth import jwt
 
 
 REQUESTAPI_BLUEPRINT = Blueprint('REQUESTAPI', __name__, url_prefix='')
 
 API = Namespace('requests', description='requests')
 
-requestDataAccess = RequestDataAccess()
 jsonClassEncoder = JsonClassEncoder()
 emailservice = Email() 
 UploadFolder = os.path.join(app.root_path, 'attachments') 
@@ -26,13 +26,13 @@ class RequestResource(Resource):
     
     @staticmethod
     @REQUESTAPI_BLUEPRINT.route('/requests/test')
-    @oidc.accept_token(True)   
+    @jwt.requires_auth
     def get():
         return jsonify("its working!") , 200
 
     @staticmethod    
     @REQUESTAPI_BLUEPRINT.route('/requests/upload/<requestid>', methods=['GET','POST'])
-    @oidc.accept_token(True)
+    @jwt.requires_auth
     def file_upload(requestid):  
         fileStorage = request.files['image']
         uploadFolder = UploadFolder + '/' + requestid + '/'
@@ -47,7 +47,7 @@ class RequestResource(Resource):
 
     @staticmethod   
     @REQUESTAPI_BLUEPRINT.route('/requests/download/<requestid>')
-    @oidc.accept_token(True) 
+    @jwt.requires_auth
     def file_download(requestid): 
         folderpath = UploadFolder + '/' + requestid + '/'    
         folderpath = folderpath.replace('\\','/')
@@ -66,7 +66,7 @@ class RequestResource(Resource):
     @staticmethod   
     @REQUESTAPI_BLUEPRINT.route('/requests/<requestid>', methods=['PUT', 'DELETE'])
     @cors_preflight('GET,POST,OPTIONS,PUT,DELETE') 
-    @oidc.accept_token(True) 
+    @jwt.requires_auth
     def single_request(requestid):
         response_object = {'status': 'success'}
         if request.method == 'PUT':
@@ -76,10 +76,10 @@ class RequestResource(Resource):
             status = requestjson['status']
             createdby = requestjson['createdby']   
             updated = requestjson['updated']
-            requestaddresult = requestDataAccess.EditRequest(requestid, name, description, status, createdby, updated)
+            requestaddresult = Request.edit_request(requestid, name, description, status, createdby, updated)
             response_object['message'] = 'Request updated!'
         if request.method == 'DELETE':
-            requestaddresult = requestDataAccess.DeleteRequest(requestid)
+            requestaddresult = Request.delete_request(requestid)
             response_object['message'] = 'Request removed!'
         if requestaddresult.success == True:
             return jsonClassEncoder.encode(requestaddresult), 200
@@ -89,7 +89,7 @@ class RequestResource(Resource):
     @staticmethod
     @cors_preflight('GET,POST,OPTIONS')       
     @REQUESTAPI_BLUEPRINT.route('/requests/add', methods=['GET','POST'])    
-    @oidc.accept_token(True)  
+    @jwt.requires_auth
     def addrequest():
         requestjson = request.get_json()
 
@@ -97,9 +97,9 @@ class RequestResource(Resource):
         description = requestjson['description']
         status = "submitted"
         createdby = requestjson['createdby']    
-        userid = g.oidc_token_info['sub']
+        userid = g.jwt_oidc_token_info['sub']
         transactionid = requestjson['transactionid']  
-        requestaddresult = requestDataAccess.AddRequest(name, description, status, createdby, userid, transactionid)
+        requestaddresult = Request.add_request(name, description, status, createdby, userid, transactionid)
         if requestaddresult.success == True:
             emailservice.send('abin.antony@aot-technologies.com','TEST FOI TEST',"REQUEST ADDED")
             return jsonClassEncoder.encode(requestaddresult), 200
@@ -109,17 +109,17 @@ class RequestResource(Resource):
     @staticmethod    
     @REQUESTAPI_BLUEPRINT.route('/requests/all')
     @cors_preflight('GET,POST,OPTIONS')
-    @oidc.accept_token(True)     
+    @jwt.requires_auth
     def getallrequests():
-        roles = g.oidc_token_info['realm_access']['roles']
-        userid = g.oidc_token_info['sub']
+        roles = g.jwt_oidc_token_info['realm_access']['roles']
+        userid = g.jwt_oidc_token_info['sub']
         userrole = 'user_role'
         approverrole = 'approver_role'
         if userrole in roles:
-            requests = requestDataAccess.GetRequestsByUser(userid)
+            requests = Request.get_requests_by_user(userid)
         elif approverrole in roles:
-            requests = requestDataAccess.GetRequestsByRole()
+            requests = Request.get_requests_by_role()
         else:
-            requests = requestDataAccess.GetRequests()
+            requests = Request.get_requests()
         jsondata = json.dumps(requests)
         return jsondata, 200       

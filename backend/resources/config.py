@@ -1,30 +1,24 @@
 import os
 from flask import Flask
 from flask_cors import CORS, cross_origin
-from flask_oidc import OpenIDConnect
 from utils.db import db
 from utils.exception_handler import ExceptionHandler
 from utils.logger import setup_logging
 from utils.baseconfig import CONFIG, BaseConfig
 
 from dotenv import find_dotenv, load_dotenv
+from utils.auth import jwt
 
 app = Flask(__name__)
 
 app.config.update({
-        'SECRET_KEY': 'FOICLIENTAPP',          
-        'OIDC_CLIENT_SECRETS': 'client_secrets.json',
-        'OIDC_ID_TOKEN_COOKIE_SECURE': BaseConfig.OIDC_ID_TOKEN_COOKIE_SECURE,
-        'OIDC_REQUIRE_VERIFIED_EMAIL': BaseConfig.OIDC_REQUIRE_VERIFIED_EMAIL,
-        'OIDC_VALID_ISSUERS': [BaseConfig.OIDC_ISSUER_URI],
-        'OIDC_OPENID_REALM': BaseConfig.OIDC_OPENID_REALM_CALLBACK,
+        'SECRET_KEY': 'FOICLIENTAPP',
         'SQLALCHEMY_TRACK_MODIFICATIONS': False,
         'SQLALCHEMY_DATABASE_URI':BaseConfig.SQLALCHEMY_DATABASE_URI,      
 })
 
-oidc = OpenIDConnect(app)
-
 setup_logging(os.path.join(BaseConfig.PROJECT_ROOT, 'logging.conf'))  # important to do this first
+
 
 def init_app(run_mode=os.getenv('FLASK_ENV', 'production')):
     
@@ -35,8 +29,8 @@ def init_app(run_mode=os.getenv('FLASK_ENV', 'production')):
 
     app.register_blueprint(REQUESTAPI_BLUEPRINT)
 
-   
     ExceptionHandler(app)
+    setup_jwt_manager(app, jwt)
     
     db.init_app(app) 
 
@@ -46,3 +40,12 @@ def init_app(run_mode=os.getenv('FLASK_ENV', 'production')):
 
     return app
 
+
+def setup_jwt_manager(app, jwt_manager):
+    """Use flask app to configure the JWTManager to work for a particular Realm."""
+    def get_roles(a_dict):
+        return a_dict['realm_access']['roles']  # pragma: no cover
+
+    app.config['JWT_ROLE_CALLBACK'] = get_roles
+
+    jwt_manager.init_app(app)
