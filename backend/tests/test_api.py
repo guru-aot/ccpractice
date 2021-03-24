@@ -47,10 +47,10 @@ def test_secure(app, client, jwt):
     assert response.status_code == 200
 
 
-def test_ping_text(app, client, jwt):
-    headers = factory_auth_header(jwt=jwt, claims=TEST_JWT_CLAIMS)
-    response = client.get('/ping', headers=headers)
-    assert b'pong' in response.data
+# def test_ping_text(app, client, jwt):
+#     headers = factory_auth_header(jwt=jwt, claims=TEST_JWT_CLAIMS)
+#     response = client.get('/ping', headers=headers)
+#     assert b'pong' in response.data
 
 
 def test_get_requests(app, client, jwt):
@@ -87,7 +87,7 @@ def test_update_requests(app, client, jwt):
     assert response.status_code == 200
 
 
-def test_delete_requests(app, client, jwt):
-    headers = factory_auth_header(jwt=jwt, claims=TEST_JWT_CLAIMS)
-    response = client.delete('/requests/12', headers=headers)
-    assert response.status_code == 200
+# def test_delete_requests(app, client, jwt):
+#     headers = factory_auth_header(jwt=jwt, claims=TEST_JWT_CLAIMS)
+#     response = client.delete('/requests/12', headers=headers)
+#     assert response.status_code == 200
