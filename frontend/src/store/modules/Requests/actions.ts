@@ -30,7 +30,7 @@ export const actions: ActionTree<RequestState, RootState> = {
 
   startWorkFlow({ commit, dispatch}, data) {
     commit('SET_LOADING', true);
-    console.log('camundaurl'+ CAMUNDABASEURL);
+    // console.log('camundaurl'+ CAMUNDABASEURL);
     axios.post(`${CAMUNDABASEURL}/process-definition/key/${CAMUNDABPMNDEF}/start`, data)
     .then(_ => {
       commit('SET_LOADING', false);

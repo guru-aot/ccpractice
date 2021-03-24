@@ -2,10 +2,10 @@
  * ListRequest test
  */
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import ListRequest from '@/components/Request/ListRequest.vue';
+import RequestList from '@/components/Request/RequestList.vue';
 import Vuex from 'vuex';
 import vuetify from 'vuetify';
-describe('component/Request/ListRequest.vue', () => {
+describe('component/Request/RequestList.vue', () => {
   let wrapper: any;
   beforeEach(() => {
     const localVue = createLocalVue();
@@ -33,7 +33,7 @@ describe('component/Request/ListRequest.vue', () => {
         },
       },
     });
-    wrapper = shallowMount(ListRequest, {
+    wrapper = shallowMount(RequestList, {
       localVue,
       store,
     });
