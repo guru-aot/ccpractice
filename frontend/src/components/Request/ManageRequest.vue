@@ -1,10 +1,7 @@
-
-
-  /**
-   * ListViewComponent Page
-   */
-
-  <template>
+/**
+ * RequestComponent
+ */
+<template>
   <v-card class="mx-auto">
     <v-toolbar flat>
       <v-toolbar-title class="grey--text">All Requests</v-toolbar-title>
@@ -12,28 +9,30 @@
     </v-toolbar>
     <v-divider></v-divider>
     <v-spacer></v-spacer>
-    <v-card-text>
-      <!-- <v-toolbar
-        flat
-      >        
-        
+    <v-card-text>     
+      <v-toolbar flat >        
+        <v-divider
+          class="mx-4"
+          inset
+          vertical
+        ></v-divider>
         <v-spacer></v-spacer>
         <v-dialog
           v-model="dialog"
           max-width="500px"
         >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              class="mb-2"
-              v-bind="attrs"
-              v-on="on"
-              v-show="!disabled"
-            >
-              New Request
-            </v-btn>
-          </template>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            color="primary"
+            dark
+            class="mb-2"
+            v-bind="attrs"
+            v-on="on"
+            v-show="!disabled"
+          >
+            New Request
+          </v-btn>
+        </template>
           <v-card>
             <v-card-title>
               <span class="headline">{{ formTitle }}</span>
@@ -69,14 +68,14 @@
                     sm="6"
                     md="4"
                   >
-                  <v-select
-                    :items="statusArray"
-                    label="Status"
-                    v-model="editedItem.status"
-                    dense
-                    solo
-                    v-show="disabled"
-                  ></v-select>                   
+                    <v-select
+                      :items="statusArray"
+                      label="Status"
+                      v-model="editedItem.status"
+                      dense
+                      solo
+                      v-show="disabled"
+                    ></v-select>                   
                   </v-col>
                   <v-col
                     cols="12"
@@ -129,57 +128,27 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-      </v-toolbar> -->
-      <Request />
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-      ></v-text-field>
-      <v-data-table
-      :headers="getRequestHeaders"
-      :items="getRequestList"
-      :items-per-page="10"
-      :search="search"
-      >
-       <template v-slot:item="row">
-        <tr>
-        <td class="text-xs-right">{{ row.item.requestid }}</td>
-        <td class="text-xs-right">{{ row.item.name }}</td>
-        <td class="text-xs-right">{{ row.item.description }}</td>
-        <td class="text-xs-right">{{ row.item.status }}</td>
-        <td class="text-xs-right">{{ row.item.createdby }}</td>
-        <td class="justify-center layout px-0">
-            <v-btn icon class="mx-0" @click="editItem(row.item)">
-               <v-icon color="teal">edit</v-icon>
-            </v-btn>
-            <v-btn icon class="mx-0" @click="deleteItem(row.item)">
-               <v-icon color="pink">delete</v-icon>
-            </v-btn>
-         </td>
-         </tr>
-      </template>
-      </v-data-table>
+      </v-toolbar>
+      <RequestList @edit-item="editItem" @delete-item="deleteItem" />
     </v-card-text>
   </v-card>
 </template>
-  <script lang="ts">
+<script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Getter, namespace, Action } from 'vuex-class';
 import { Guid } from 'guid-typescript';
-import axios from 'axios';
-import Request from './ManageRequest.vue';
+import RequestList from './RequestList.vue';
 const RequestModule = namespace('RequestModule');
 
 @Component({
   components: {
-    Request,
+    RequestList,
   }
 })
-export default class ListRequestComponent extends Vue {
-  @RequestModule.Action('loadRequest') public loadRequest!: any;
+
+export default class ManageRequestComponent extends Vue {
+  @RequestModule.Getter('successStatus') public successStatus!: boolean;
+  @RequestModule.Getter('errorStatus') public errorStatus!: boolean;
   @RequestModule.Action('addRequest') public addRequestStore!: any;
   @RequestModule.Action('updateRequest') public updateRequestStore!: any;
   @RequestModule.Action('deleteRequest') public deleteRequestStore!: any;
@@ -187,9 +156,6 @@ export default class ListRequestComponent extends Vue {
   @RequestModule.Action('loadRequestWF') public loadRequestWFStore!: any;
   @RequestModule.Action('approveRequestWF') public approveRequestWFStore!: any;
   @RequestModule.Getter('getTaskId') public getTaskId!: any;
-  @RequestModule.Getter('getWFXML') public getWFXML!: any;
-  @RequestModule.Getter('getRequestList') public getRequestList!: [];
-  @RequestModule.Getter('getRequestHeaders') public getRequestHeaders!: [];
 
   public form: boolean = false;
   private dialog: boolean = false;
@@ -198,14 +164,6 @@ export default class ListRequestComponent extends Vue {
   private approverRole: boolean = false;
   private userRole: boolean = false;
   private editedIndex: number = -1;
-  private search: string = '';
-  private statusArray: string[] = ['approved', 'rejected'];
-  private defaultItem: object = {
-      name: '',
-      description: '',
-      status: '',
-      createdby: ''
-  };
   private editedItem: any = {
       name: '',
       description: '',
@@ -213,10 +171,19 @@ export default class ListRequestComponent extends Vue {
       createdby: '',
       transactionid: ''
   };
+  private defaultItem: object = {
+      name: '',
+      description: '',
+      status: '',
+      createdby: ''
+  };
+  private statusArray: string[] = ['approved', 'rejected'];
+
   @Watch('dialog')
   public onPropertyChanged(value: boolean, oldValue: boolean) {
     this.dialog = value || this.close();
   }
+
   get formTitle() {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
   }
@@ -228,9 +195,19 @@ export default class ListRequestComponent extends Vue {
       this.disabled = true;
     }
   }
+
   private mounted() {
     this.setEditable();
-    this.loadRequest();
+  }
+  private editItem(item: any) {
+    this.editedIndex = item.requestid;
+    this.editedItem = Object.assign({}, item);
+    this.dialog = true;
+  }
+  private deleteItem(item: any) {
+    this.editedIndex = item.requestid;
+    this.editedItem = Object.assign({}, item);
+    this.dialogDelete = true;
   }
   private close() {
     this.dialog = false;
@@ -244,8 +221,9 @@ export default class ListRequestComponent extends Vue {
     if (this.editedIndex > -1) {
       this.updateRequestStore(this.editedItem);
       if (this.approverRole) {
+        // this.loadRequestWFStore(this.editedItem.transactionid);
+        // console.log(this.editedItem.transactionid + ':' + this.getTaskId);
         let statusValue = '';
-        // console.log(this.getWFXML);
         if (this.editedItem.status === 'approved') {
           statusValue = 'approve';
         } else {
@@ -258,6 +236,7 @@ export default class ListRequestComponent extends Vue {
             transactionID: this.getTaskId
           }
         };
+        // console.log(JSON.stringify(jsonParam));
         this.approveRequestWFStore(JSON.stringify(jsonParam));
       }
     } else {
@@ -282,17 +261,6 @@ export default class ListRequestComponent extends Vue {
     this.deleteRequestStore(this.editedItem);
     this.closeDelete();
   }
-  private editItem(item: any) {
-    this.editedIndex = item.requestid;
-    this.editedItem = Object.assign({}, item);
-    this.dialog = true;
-    this.loadRequestWFStore(this.editedItem.transactionid);
-  }
-
-  private deleteItem(item: any) {
-    this.editedIndex = item.requestid;
-    this.editedItem = Object.assign({}, item);
-    this.dialogDelete = true;
-  }
 }
 </script>
+ 
