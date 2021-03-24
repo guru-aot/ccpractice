@@ -1,0 +1,10 @@
+[
+  "backend/tests/test_api.py::test_ping",
+  "backend/tests/test_api.py::test_secure",
+  "backend/tests/test_api.py::test_get_requests",
+  "backend/tests/test_api.py::test_get_requests_text",
+  "backend/tests/test_api.py::test_post_requests",
+  "backend/tests/test_api.py::test_post_requests_text",
+  "backend/tests/test_api.py::test_update_requests",
+  "backend/tests/test_api.py::test_delete_requests"
+]

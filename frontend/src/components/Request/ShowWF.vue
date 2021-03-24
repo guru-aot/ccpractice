@@ -28,8 +28,9 @@ export default class ShowWFComponent extends Vue {
 
   private showWF() {
     this.processDefinitionId = this.getProcessDefinitionId;
-    // console.log(this.processDefinitionId);
+    // console.log('ShowWF: ' + this.processDefinitionId);
     this.getWFXMLStore(this.processDefinitionId);
+    this.$emit('show-bpmn-wf');
   }
   private setEditable() {
     const userRoles = sessionStorage.getItem('user-roles');

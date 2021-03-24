@@ -2,12 +2,12 @@ version: '3'
 services:
   CAMUNDA:    
     image: camundabpm-docker
-    container_name: cccamundacontainer     
+    container_name: aot_foi_cc_camunda_bpm     
     build:
       context: ./      
       dockerfile: bpmwf/dockerfile
     ports:
-      - "8000:8080"    
+      - "6401:8080"    
     networks:
       services-network:
         aliases:
@@ -17,7 +17,7 @@ services:
       context: ./      
       dockerfile: backend/dockerfile
     image: ccbackendimage
-    container_name: cccfoibecontainer 
+    container_name: aot_foi_cc_backend
     depends_on: 
       - postgresqldb     
     networks:
@@ -25,25 +25,26 @@ services:
         aliases:
           - backendnw
     ports:
-      - 5000:5000
+      - 6402:6402
     environment:
       - DATABASE_URL=postgresql://docker:docker@postgresqldb:5432/docker
       - FLASK_ENV:DEV
   FRONTEND:
     build:
       context: ./      
-      dockerfile: frontend/Dockerfile
+      dockerfile: frontend/Dockerfile      
       args:
-        - API_BASE_URL=http://localhost:5000/
+        - API_BASE_URL=http://localhost:6402/
         - KEYCLOAK_URL=https://iam.aot-technologies.com/auth/
         - KEYCLOAK_REALM=foirealm
         - KEYCLOAK_CLIENT=foiclientfe
         - KEYCLOAK_CLIENT_SECRET=fdf3be98-6dfa-4a5a-a0fe-ef644ffbe106
-        - CAMUNDAENGINEBASEURL=http://localhost:8000/engine-rest
+        - CAMUNDAENGINEBASEURL=http://localhost:6401/engine-rest
         - CAMUNDABPMNFILE=FOICCBPMNFILE1
-    image: ccfrontendimage    
+    image: ccfrontendimage
+    container_name: aot_foi_cc_frontend   
     ports:
-      - 8080:8080
+      - 6403:6403
     depends_on:
       - BACKEND
     networks:
@@ -52,9 +53,9 @@ services:
           - frontendnw
   postgresqldb:
     image: postgres
-    container_name: pg-docker
+    container_name: aot_foi_cc_db_pg
     ports:
-      - "5400:5432"
+      - "6404:5432"
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
