@@ -5,7 +5,7 @@ import KeycloakService from '@/lib/keyCloak';
 import axios from '@/lib/axios';
 import router from '@/router';
 
-const BASE_URL = process.env.VUE_APP_API_BASE_URL || 'http://localhost:5000/';
+const BASE_URL = process.env.VUE_APP_API_BASE_URL || 'http://localhost:6402/';
 
 const ENDURL = 'users';
 /**
