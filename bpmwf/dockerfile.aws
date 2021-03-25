@@ -1,0 +1,5 @@
+FROM camunda/camunda-bpm-platform
+
+COPY . /app
+
+COPY web.xml /camunda/webapps/engine-rest/WEB-INF/ 
