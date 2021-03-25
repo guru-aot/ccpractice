@@ -36,9 +36,9 @@ phases:
       - echo build started on  `date`
       # Build Docker images
       - echo Building the Docker Images
-      - docker build -t ccpractice/backend -f ./backend/dockerfile.aws ./backend
-      - docker build -t ccpractice/bpmwf -f ./bpmwf/dockerfile.aws ./bpmwf
-      - docker build -t ccpractice/frontend -f ./frontend/dockerfile.aws ./frontend
+      - docker build -t backend -f ./backend/dockerfile.aws ./backend
+      - docker build -t bpmwf -f ./bpmwf/dockerfile.aws ./bpmwf
+      - docker build -t frontend -f ./frontend/dockerfile.aws ./frontend
       # Login to docker CLI
       - echo "$DOCKER_PW" | docker login -u "$DOCKER_ID" --password-stdin
   post_build:
