@@ -7,9 +7,9 @@ version: 0.2
   #parameter-store:
      # key: "value"
      # key: "value"
-  #secrets-manager:
-     # key: secret-id:json-key:version-stage:version-id
-     # key: secret-id:json-key:version-stage:version-id
+  secrets-manager:
+     DOCKER_ID: guruDockerHub:DOCKER_ID
+     DOCKER_PW: guruDockerHub:DOCKER_PW
   #exported-variables:
      # - variable
      # - variable
