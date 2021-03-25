@@ -21,14 +21,9 @@ version: 0.2
   #build-graph:
 phases:
   install:
-    #If you use the Ubuntu standard image 2.0 or later, you must specify runtime-versions.
-    #If you specify runtime-versions and use an image other than Ubuntu standard image 2.0, the build fails.
-    runtime-versions:
-      docker: 18
-      # name: version
-    #commands:
-      # - command
-      # - command
+    commands:
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2 &
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   # pre_build:
     # commands:
       # - echo build client and backend for testing 
@@ -41,9 +36,9 @@ phases:
       - echo build started on  `date`
       # Build Docker images
       - echo Building the Docker Images
-      - docker build -t ccpractice/backend ./backend/dockerfile ./backend
-      - docker build -t ccpractice/bpmwf ./bpmwf/dockerfile ./bpmwf
-      - docker build -t ccpractice/frontend ./frontend/dockerfile ./frontend
+      - docker build -t ccpractice/backend -f ./backend/dockerfile ./backend
+      - docker build -t ccpractice/bpmwf -f ./bpmwf/dockerfile ./bpmwf
+      - docker build -t ccpractice/frontend -f ./frontend/dockerfile ./frontend
       # Login to docker CLI
       - echo "$DOCKER_PW" | docker login -u "$DOCKER_ID" --password-stdin
   post_build:
