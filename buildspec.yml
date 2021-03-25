@@ -45,9 +45,9 @@ phases:
     commands:
       # Push these images to dockerhub
       - echo Pushing to Docker hub...
-      - docker push ccpractice/backend
-      - docker push ccpractice/bpmwf
-      - docker push ccpractice/frontend
+      - docker push guruaot/backend
+      - docker push guruaot/bpmwf
+      - docker push guruaot/frontend
 #reports:
   #report-name-or-arn:
     #files:
