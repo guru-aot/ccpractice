@@ -17,4 +17,5 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 #RUN useradd appuser && chown -R appuser /app
 #USER appuser
 
-CMD ["flask", "run", "-h", "0.0.0.0", "-p", "6402"]
+RUN chmod u+x ./entrypoint
+ENTRYPOINT ["/bin/sh", "entrypoint"]
